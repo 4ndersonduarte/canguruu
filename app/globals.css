@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #ffffff;
+  --primary: #ffd400;
+  --secondary: #111111;
+  --text-primary: #111111;
+  --text-secondary: #4b5563;
+  --border: #111111;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  background-image:
+    radial-gradient(600px 420px at 12% 18%, rgba(255, 212, 0, 0.18), transparent 60%),
+    radial-gradient(520px 380px at 88% 22%, rgba(255, 212, 0, 0.14), transparent 60%),
+    radial-gradient(720px 520px at 55% 90%, rgba(255, 212, 0, 0.10), transparent 65%);
+  background-repeat: no-repeat;
+}
+
+/* Glassmorphism base */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Neon glow on hover for cards */
+.card-glow:hover {
+  box-shadow: 0 16px 40px rgba(17, 17, 17, 0.14);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(90deg, #111111, #ffd400);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.scribble-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.scribble-underline::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -0.08em;
+  height: 0.45em;
+  background: rgba(255, 212, 0, 0.75);
+  border-radius: 999px;
+  transform: rotate(-2deg);
+  z-index: -1;
+}
