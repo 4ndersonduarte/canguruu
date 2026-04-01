@@ -30,7 +30,7 @@ export default function Hero() {
           className="rounded-card border border-border bg-bg/80 p-6 md:p-8 flex flex-col justify-center card-glow transition-all duration-300 hover:-translate-y-1"
         >
           <h1 className="font-display text-[2rem] sm:text-4xl md:text-5xl font-bold leading-tight mb-4">
-            Do <span className="scribble-underline">rabisco</span> ao produto.
+            Da identidade visual ao seu sistema completo.
           </h1>
           <p className="text-text-secondary text-sm sm:text-base leading-relaxed mb-4 max-w-[62ch]">
             Artes e campanhas pra comércio, identidade visual, sites e apps. Um visual limpo e moderno que chama atenção e vende.

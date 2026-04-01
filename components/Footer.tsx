@@ -6,6 +6,14 @@ const socialLinks = [
   { href: "https://behance.net", label: "Behance" },
 ];
 
+const toolLogos = [
+  { src: "/ferramentas/flutter.png", alt: "Flutter", className: "h-16 w-16" },
+  { src: "/ferramentas/supabase.png", alt: "Supabase", className: "h-16 w-16" },
+  { src: "/ferramentas/photoshop.png", alt: "Adobe Photoshop", className: "h-10 w-10" },
+  { src: "/ferramentas/after.png", alt: "Adobe After Effects", className: "h-10 w-10" },
+  { src: "/ferramentas/android.webp", alt: "Android", className: "h-12 w-12" },
+];
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -25,13 +33,28 @@ export default function Footer() {
             </a>
           ))}
         </div>
+
+        <div className="flex items-center gap-3 opacity-95">
+          <div className="flex items-center gap-4">
+            {toolLogos.map((t) => (
+              <img
+                key={t.alt}
+                src={t.src}
+                alt={t.alt}
+                className={`${t.className} object-contain grayscale`}
+                loading="lazy"
+              />
+            ))}
+          </div>
+          <span className="font-mono text-text-secondary text-xs whitespace-nowrap">
+            Made with [Flutter/React] & Coffeine.
+          </span>
+        </div>
+
         <p className="text-text-secondary text-sm">
           © {currentYear} Canguruu
         </p>
       </div>
-      <p className="font-mono text-center text-text-secondary text-xs mt-4">
-        Made with [Flutter/React] & Coffeine.
-      </p>
     </footer>
   );
 }

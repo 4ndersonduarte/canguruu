@@ -15,15 +15,9 @@ export default function WorksGallery() {
     () => [
       {
         id: "acelerabanner",
-        title: "Acelera Banner",
-        src: "/trabalhos/acelerabanner.png",
+        title: "Acelera Coração",
+        src: "/trabalhos/aceleracoracao.png",
         description: "Banner promocional (campanha).",
-      },
-      {
-        id: "campanha",
-        title: "Campanha",
-        src: "/trabalhos/campanha.png",
-        description: "Peças de campanha para redes sociais.",
       },
       {
         id: "canguruu",
@@ -45,21 +39,15 @@ export default function WorksGallery() {
       },
       {
         id: "cupons",
-        title: "Cupons",
+        title: "Cupom Acelera Coração",
         src: "/trabalhos/cupons.png",
-        description: "Artes de cupons/ofertas com foco em conversão.",
+        description: "Cupom criado para campanha Acelera Coração.",
       },
       {
         id: "lojaonline",
         title: "Loja Online",
         src: "/trabalhos/lojaonline.png",
         description: "Layout/arte para vitrine e loja online.",
-      },
-      {
-        id: "processo",
-        title: "Processo",
-        src: "/trabalhos/processo.png",
-        description: "Peça de processo/etapas (conteúdo explicativo).",
       },
     ],
     []
