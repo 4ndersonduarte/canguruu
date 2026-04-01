@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTheme } from "@/hooks/useTheme";
 
 const navLinks = [
   { href: "#trabalhos", label: "Trabalhos" },
@@ -9,6 +10,8 @@ const navLinks = [
 ];
 
 export default function Header() {
+  const { isDark } = useTheme();
+  
   return (
     <motion.header
       initial={false}
@@ -18,7 +21,11 @@ export default function Header() {
     >
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-          <img src="/ocanguruu.svg" alt="Canguruu" className="h-20 sm:h-28 w-auto -my-2 sm:-my-3" />
+          <img 
+            src={isDark ? "/logolight.svg" : "/ocanguruu.svg"} 
+            alt="Canguruu" 
+            className="h-20 sm:h-28 w-auto -my-2 sm:-my-3" 
+          />
         </a>
         <div className="flex items-center gap-3 sm:gap-6">
           {navLinks.map((link) => (

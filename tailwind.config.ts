@@ -9,12 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#FFFFFF",
-        primary: "#FFD400",
-        secondary: "#111111",
-        "text-primary": "#111111",
-        "text-secondary": "#4B5563",
-        border: "#111111",
+        bg: "var(--bg)",
+        primary: "var(--primary)",
+        secondary: "var(--secondary)",
+        "text-primary": "var(--text-primary)",
+        "text-secondary": "var(--text-secondary)",
+        border: "var(--border)",
       },
       fontFamily: {
         display: ["var(--font-trocchi)", "Trocchi", "serif"],
@@ -27,7 +27,7 @@ const config: Config = {
       },
       boxShadow: {
         glow: "0 14px 34px rgba(17, 17, 17, 0.12)",
-        "glow-violet": "0 14px 34px rgba(255, 212, 0, 0.22)",
+        "glow-violet": "0 14px 34px rgba(160, 160, 152, 0.22)",
       },
       backdropBlur: {
         nav: "12px",

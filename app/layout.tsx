@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Trocchi, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const trocchi = Trocchi({
   subsets: ["latin"],
@@ -37,7 +38,9 @@ export default function RootLayout({
       className={`${trocchi.variable} ${inter.variable} ${jetbrains.variable}`}
     >
       <body className="font-body antialiased bg-bg text-text-primary">
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -62,3 +62,73 @@ body {
   transform: rotate(-2deg);
   z-index: -1;
 }
+
+/* Light mode (6am - 6pm) */
+.light-mode {
+  --bg: #ffffff;
+  --primary: #ffd400;
+  --secondary: #111111;
+  --text-primary: #111111;
+  --text-secondary: #4b5563;
+  --border: #111111;
+}
+
+.light-mode body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  background-image:
+    radial-gradient(600px 420px at 12% 18%, rgba(255, 212, 0, 0.18), transparent 60%),
+    radial-gradient(520px 380px at 88% 22%, rgba(255, 212, 0, 0.14), transparent 60%),
+    radial-gradient(720px 520px at 55% 90%, rgba(255, 212, 0, 0.10), transparent 65%);
+}
+
+.light-mode .glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Dark mode (6pm - 6am) */
+.dark-mode {
+  --bg: #262624;
+  --primary: #ffd400;
+  --secondary: #111111;
+  --text-primary: #e9e9e3;
+  --text-secondary: #a0a098;
+  --border: #40403c;
+}
+
+.dark-mode .text-bg {
+  color: #e9e9e3 !important;
+}
+
+.dark-mode body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  background-image:
+    radial-gradient(600px 420px at 12% 18%, rgba(160, 160, 152, 0.12), transparent 60%),
+    radial-gradient(520px 380px at 88% 22%, rgba(160, 160, 152, 0.08), transparent 60%),
+    radial-gradient(720px 520px at 55% 90%, rgba(160, 160, 152, 0.06), transparent 65%);
+}
+
+.dark-mode .glass {
+  background: rgba(38, 38, 36, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark-mode .card-glow:hover {
+  box-shadow: 0 16px 40px rgba(160, 160, 152, 0.07);
+}
+
+.dark-mode .hover\:shadow-glow:hover {
+  box-shadow: 0 14px 34px rgba(160, 160, 152, 0.11) !important;
+}
+
+.dark-mode .bg-bg\/50 {
+  background-color: rgba(64, 64, 60, 0.5) !important;
+}
+
+.dark-mode footer {
+  background-color: rgba(64, 64, 60, 0.8) !important;
+}
