@@ -114,7 +114,7 @@ export default function WorksGallery() {
               <img src={w.src} alt={w.title} className="w-full h-auto block" loading="lazy" />
             </div>
             <div className="p-2 sm:p-3">
-              <p className="font-display font-semibold text-xs sm:text-sm text-primary truncate">{w.title}</p>
+              <p className="font-display font-semibold text-xs sm:text-sm truncate">{w.title}</p>
               <p className="font-mono text-[9px] sm:text-[10px] text-text-secondary mt-1 leading-relaxed">
                 {w.description}
               </p>
