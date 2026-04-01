@@ -75,7 +75,7 @@ export default function Contact() {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-btn bg-border/50 border border-border text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full px-4 py-2.5 rounded-btn bg-bg/50 border border-border text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50"
                 placeholder="Seu nome"
               />
             </div>
@@ -90,7 +90,7 @@ export default function Contact() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-btn bg-border/50 border border-border text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full px-4 py-2.5 rounded-btn bg-bg/50 border border-border text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50"
                 placeholder="seu@email.com"
               />
             </div>
@@ -105,7 +105,7 @@ export default function Contact() {
                 rows={3}
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-btn bg-border/50 border border-border text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                className="w-full px-4 py-2.5 rounded-btn bg-bg/50 border border-border text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                 placeholder="Conte sobre seu projeto..."
               />
             </div>

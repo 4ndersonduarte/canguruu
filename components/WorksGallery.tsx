@@ -32,10 +32,46 @@ export default function WorksGallery() {
         description: "Logo Canguruu (versão final).",
       },
       {
-        id: "cardapio",
-        title: "Cardápio",
-        src: "/trabalhos/cardapio.png",
-        description: "Cardápio com layout pronto pra imprimir e postar.",
+        id: "dilab",
+        title: "Dilab",
+        src: "/trabalhos/dilab.png",
+        description: "Design de materiais promocionais e institucionais.",
+      },
+      {
+        id: "dilab3",
+        title: "Dilab",
+        src: "/trabalhos/dilab3.png",
+        description: "Design de materiais promocionais e institucionais.",
+      },
+      {
+        id: "dilabagenda",
+        title: "Dilab",
+        src: "/trabalhos/dilabagenda.png",
+        description: "Design de materiais promocionais e institucionais.",
+      },
+      {
+        id: "forno",
+        title: "Forno de Ouro",
+        src: "/trabalhos/forno.png",
+        description: "Materiais institucionais e branding.",
+      },
+      {
+        id: "forno1",
+        title: "Forno de Ouro",
+        src: "/trabalhos/forno1.png",
+        description: "Materiais institucionais e branding.",
+      },
+      {
+        id: "forno2",
+        title: "Forno de Ouro",
+        src: "/trabalhos/forno2.png",
+        description: "Materiais institucionais e branding.",
+      },
+      {
+        id: "forno3",
+        title: "Forno de Ouro",
+        src: "/trabalhos/forno3.png",
+        description: "Materiais institucionais e branding.",
       },
       {
         id: "cupons",
@@ -64,7 +100,7 @@ export default function WorksGallery() {
         <span className="scribble-underline">Trabalhos</span>
       </motion.h2>
 
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
+      <div className="columns-2 sm:columns-2 lg:columns-3 gap-3 sm:gap-4 [column-fill:_balance]">
         {works.map((w) => (
           <motion.article
             key={w.id}
@@ -72,14 +108,14 @@ export default function WorksGallery() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.25 }}
-            className="w-full mb-4 break-inside-avoid rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 text-left"
+            className="w-full mb-3 sm:mb-4 break-inside-avoid rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 text-left"
           >
             <div className="w-full">
               <img src={w.src} alt={w.title} className="w-full h-auto block" loading="lazy" />
             </div>
-            <div className="p-3">
-              <p className="font-display font-semibold text-sm text-secondary truncate">{w.title}</p>
-              <p className="font-mono text-[10px] text-text-secondary mt-1 leading-relaxed">
+            <div className="p-2 sm:p-3">
+              <p className="font-display font-semibold text-xs sm:text-sm text-secondary truncate">{w.title}</p>
+              <p className="font-mono text-[9px] sm:text-[10px] text-text-secondary mt-1 leading-relaxed">
                 {w.description}
               </p>
             </div>

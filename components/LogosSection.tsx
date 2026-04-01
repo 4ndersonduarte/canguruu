@@ -13,6 +13,10 @@ export default function LogosSection() {
   const logos: Logo[] = useMemo(
     () => [
       { id: "canguruulogo", name: "Canguruu", src: "/clientes/logotipos/canguruulogo.png" },
+      { id: "comercialrodagem", name: "Comercial Rodagem", src: "/clientes/logotipos/comercialrodagem.png" },
+      { id: "fornodeouro", name: "Forno de Ouro", src: "/clientes/logotipos/fornodeouro.png" },
+      { id: "jovempipas", name: "Jovem Pipas", src: "/clientes/logotipos/jovempipas.png" },
+      { id: "reidascarnes", name: "Rei das Carnes", src: "/clientes/logotipos/reidascarnes.png" },
       { id: "tdboutique", name: "TD Boutique", src: "/clientes/logotipos/tdboutique.png" },
       { id: "viladegust", name: "Vila Degust", src: "/clientes/logotipos/viladegust.png" },
     ],
@@ -23,7 +27,7 @@ export default function LogosSection() {
     <section className="relative py-12 sm:py-16 px-4 sm:px-6 max-w-none mx-auto">
       {/* Background image - sem limites */}
       <div 
-        className="absolute inset-0 bg-center bg-no-repeat opacity-30"
+        className="absolute inset-0 bg-center bg-no-repeat opacity-40"
         style={{ backgroundImage: 'url(/imagemfundo.png)', backgroundSize: 'auto' }}
       />
       
@@ -38,7 +42,7 @@ export default function LogosSection() {
           <span className="scribble-underline">Logotipos</span>
         </motion.h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3">
           {logos.map((logo) => (
             <motion.div
               key={logo.id}
@@ -48,7 +52,7 @@ export default function LogosSection() {
               transition={{ duration: 0.25 }}
               className="rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 aspect-square"
             >
-              <div className="w-full h-full p-4 flex items-center justify-center">
+              <div className="w-full h-full p-3 flex items-center justify-center">
                 <img src={logo.src} alt={logo.name} className="w-full h-full object-contain" />
               </div>
             </motion.div>
