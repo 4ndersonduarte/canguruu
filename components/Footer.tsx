@@ -9,8 +9,8 @@ const socialLinks = [
 const toolLogos = [
   { src: "/ferramentas/flutter.png", alt: "Flutter", className: "h-16 w-16" },
   { src: "/ferramentas/supabase.png", alt: "Supabase", className: "h-16 w-16" },
-  { src: "/ferramentas/photoshop.png", alt: "Adobe Photoshop", className: "h-10 w-10" },
-  { src: "/ferramentas/after.png", alt: "Adobe After Effects", className: "h-10 w-10" },
+  { src: "/ferramentas/photoshop.png", alt: "Adobe Photoshop", className: "h-7 w-7" },
+  { src: "/ferramentas/after.png", alt: "Adobe After Effects", className: "h-7 w-7" },
   { src: "/ferramentas/android.webp", alt: "Android", className: "h-12 w-12" },
 ];
 
@@ -34,8 +34,8 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3 opacity-95">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 opacity-95">
+          <div className="flex items-center gap-2 sm:gap-4">
             {toolLogos.map((t) => (
               <img
                 key={t.alt}
@@ -47,7 +47,7 @@ export default function Footer() {
             ))}
           </div>
           <span className="font-mono text-text-secondary text-xs whitespace-nowrap">
-            Made with [Flutter/React] & Coffeine.
+            Made with [Flutter/React] & Coffee.
           </span>
         </div>
 
