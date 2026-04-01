@@ -28,7 +28,7 @@ export default function LogosSection() {
       {/* Background image - sem limites */}
       <div 
         className="absolute inset-0 bg-center bg-no-repeat opacity-40"
-        style={{ backgroundImage: 'url(/imagemfundo.png)', backgroundSize: 'auto' }}
+        style={{ backgroundImage: 'url(/imagemfundo.png)', backgroundSize: 'auto', backgroundPosition: 'center center' }}
       />
       
       {/* Content */}

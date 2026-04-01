@@ -16,6 +16,9 @@ export default function Header() {
       transition={{ duration: 0.5 }}
       className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50"
     >
+      {/* Gradiente transparente na parte inferior */}
+      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-bg/20 to-transparent pointer-events-none" />
+      
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
           <img src="/ocanguruu.svg" alt="Canguruu" className="h-20 sm:h-28 w-auto -my-2 sm:-my-3" />
