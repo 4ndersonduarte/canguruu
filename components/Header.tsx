@@ -37,6 +37,7 @@ export default function Header() {
               {link.label}
             </a>
           ))}
+          
           <a
             href="#contato"
             className="font-mono text-sm px-3 sm:px-4 py-2.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
