@@ -55,7 +55,7 @@ export default function ImageModal({
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className={`relative w-full max-w-4xl max-h-[85vh] rounded-card border border-border overflow-hidden bg-bg flex flex-col ${aspectClassName}`}
+              className={`relative w-full h-full max-w-4xl max-h-[85vh] rounded-card border border-border overflow-hidden bg-bg flex flex-col ${aspectClassName}`}
             >
               {(showTitle && title) || showCloseButton ? (
                 <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border bg-bg/95">

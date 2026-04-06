@@ -106,7 +106,7 @@ export default function ClientsStories() {
                   <img
                     src={src}
                     alt={`${selected.name} ${idx + 1}`}
-                    className="w-full h-full object-contain bg-secondary"
+                    className="w-full h-full object-contain bg-bg"
                     loading="eager"
                   />
                 </div>
