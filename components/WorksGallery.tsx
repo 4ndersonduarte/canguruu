@@ -198,11 +198,13 @@ export default function WorksGallery() {
         showTitle
         showCloseButton
       >
-        <div className="w-full h-full flex flex-col">
+        <div className="w-full h-full flex flex-col min-h-0">
           {selected?.src ? (
-            <img src={selected.src} alt={selected.title} className="w-full flex-1 object-contain bg-secondary" />
+            <div className="flex-1 min-h-0 bg-secondary">
+              <img src={selected.src} alt={selected.title} className="w-full h-full object-contain" />
+            </div>
           ) : null}
-          <div className="p-4 border-t border-border bg-bg">
+          <div className="shrink-0 p-4 border-t border-border bg-bg">
             <p className="font-mono text-xs text-text-secondary mb-3">{selected?.description}</p>
             <a
               href={whatsappHref}

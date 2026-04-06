@@ -103,7 +103,12 @@ export default function ClientsStories() {
             <div className="flex-1 overflow-y-auto snap-y snap-mandatory">
               {selected.stories.map((src, idx) => (
                 <div key={`${selected.id}-${idx}`} className="w-full h-full snap-start">
-                  <img src={src} alt={`${selected.name} ${idx + 1}`} className="w-full h-full object-cover" loading="eager" />
+                  <img
+                    src={src}
+                    alt={`${selected.name} ${idx + 1}`}
+                    className="w-full h-full object-contain bg-secondary"
+                    loading="eager"
+                  />
                 </div>
               ))}
             </div>
