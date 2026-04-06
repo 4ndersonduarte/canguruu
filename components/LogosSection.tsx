@@ -32,7 +32,7 @@ export default function LogosSection() {
       />
       <div 
         className="absolute inset-0 bg-center bg-no-repeat opacity-40 sm:hidden"
-        style={{ backgroundImage: 'url(/imagemfundo-mobile.webp)', backgroundSize: 'cover' }}
+        style={{ backgroundImage: 'url(/imagemfundo.webp)', backgroundSize: 'cover' }}
       />
       
       {/* Content */}

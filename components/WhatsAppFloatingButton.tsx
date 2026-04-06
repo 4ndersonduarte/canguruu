@@ -1,10 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 const WHATSAPP_NUMBER = "5574998094104";
 const WHATSAPP_MSG = "Olá! Gostaria de solicitar um orçamento.";
 
 export default function WhatsAppFloatingButton() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent<{ visible?: boolean }>;
+      if (typeof ce.detail?.visible === "boolean") setVisible(ce.detail.visible);
+    };
+
+    window.addEventListener("wa-fab-visible", handler);
+    return () => window.removeEventListener("wa-fab-visible", handler);
+  }, []);
+
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MSG)}`;
+
+  if (!visible) return null;
 
   return (
     <a

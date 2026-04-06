@@ -170,7 +170,10 @@ export default function WorksGallery() {
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") openWork(w);
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openWork(w);
+              }
             }}
             className="cursor-pointer w-full mb-3 sm:mb-4 break-inside-avoid rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 text-left"
           >
@@ -194,7 +197,6 @@ export default function WorksGallery() {
         title={selected?.title}
         showTitle
         showCloseButton
-        aspectClassName="aspect-[4/3]"
       >
         <div className="w-full h-full flex flex-col">
           {selected?.src ? (
@@ -206,9 +208,9 @@ export default function WorksGallery() {
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow transition-all"
+              className="font-mono inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
             >
-              Quero algo assim
+              Quero algo assim (WhatsApp)
             </a>
           </div>
         </div>

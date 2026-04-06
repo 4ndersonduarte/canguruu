@@ -48,6 +48,12 @@ export default function ClientsStories() {
   const openClient = (c: Client) => {
     setSelected(c);
     setOpen(true);
+    window.dispatchEvent(new CustomEvent("wa-fab-visible", { detail: { visible: false } }));
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+    window.dispatchEvent(new CustomEvent("wa-fab-visible", { detail: { visible: true } }));
   };
 
   return (
@@ -86,9 +92,9 @@ export default function ClientsStories() {
 
       <ImageModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={closeModal}
         title={selected ? `${selected.name} • Stories` : "Stories"}
-        aspectClassName="max-w-sm"
+        aspectClassName="max-w-sm aspect-[9/16]"
         showCloseButton={false}
         showTitle={false}
       >
@@ -130,7 +136,7 @@ export default function ClientsStories() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={closeModal}
                   className="font-mono text-xs px-3 py-1.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
                   aria-label="Fechar"
                 >
