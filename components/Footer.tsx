@@ -24,10 +24,10 @@ const socialLinks = [
 ];
 
 const toolLogos = [
-  { src: "/ferramentas/flutter.png", alt: "Flutter", className: "h-16 w-16" },
-  { src: "/ferramentas/supabase.png", alt: "Supabase", className: "h-16 w-16" },
-  { src: "/ferramentas/photoshop.png", alt: "Adobe Photoshop", className: "h-7 w-7" },
-  { src: "/ferramentas/after.png", alt: "Adobe After Effects", className: "h-7 w-7" },
+  { src: "/ferramentas/flutter.webp", alt: "Flutter", className: "h-16 w-16" },
+  { src: "/ferramentas/supabase.webp", alt: "Supabase", className: "h-16 w-16" },
+  { src: "/ferramentas/photoshop.webp", alt: "Adobe Photoshop", className: "h-7 w-7" },
+  { src: "/ferramentas/after.webp", alt: "Adobe After Effects", className: "h-7 w-7" },
   { src: "/ferramentas/android.webp", alt: "Android", className: "h-12 w-12" },
 ];
 

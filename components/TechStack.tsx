@@ -12,10 +12,10 @@ type ToolLogo = {
 export default function TechStack() {
   const tools: ToolLogo[] = useMemo(
     () => [
-      { id: "flutter", name: "Flutter", src: "/ferramentas/flutter.png" },
-      { id: "supabase", name: "Supabase", src: "/ferramentas/supabase.png" },
-      { id: "photoshop", name: "Adobe Photoshop", src: "/ferramentas/photoshop.png" },
-      { id: "after", name: "Adobe After Effects", src: "/ferramentas/after.png" },
+      { id: "flutter", name: "Flutter", src: "/ferramentas/flutter.webp" },
+      { id: "supabase", name: "Supabase", src: "/ferramentas/supabase.webp" },
+      { id: "photoshop", name: "Adobe Photoshop", src: "/ferramentas/photoshop.webp" },
+      { id: "after", name: "Adobe After Effects", src: "/ferramentas/after.webp" },
       { id: "android", name: "Android", src: "/ferramentas/android.webp" },
     ],
     []

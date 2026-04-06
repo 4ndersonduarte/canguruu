@@ -25,6 +25,12 @@ export const metadata: Metadata = {
   title: "Canguruu | Design, Estratégia & Dev",
   description:
     "Design, Estratégia & Dev: artes e campanhas, identidade visual, sites e apps, vídeo e motion. Do rabisco ao produto.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

@@ -12,13 +12,13 @@ type Logo = {
 export default function LogosSection() {
   const logos: Logo[] = useMemo(
     () => [
-      { id: "canguruulogo", name: "Canguruu", src: "/clientes/logotipos/canguruulogo.png" },
-      { id: "comercialrodagem", name: "Comercial Rodagem", src: "/clientes/logotipos/comercialrodagem.png" },
-      { id: "fornodeouro", name: "Forno de Ouro", src: "/clientes/logotipos/fornodeouro.png" },
-      { id: "jovempipas", name: "Jovem Pipas", src: "/clientes/logotipos/jovempipas.png" },
-      { id: "reidascarnes", name: "Rei das Carnes", src: "/clientes/logotipos/reidascarnes.png" },
-      { id: "tdboutique", name: "TD Boutique", src: "/clientes/logotipos/tdboutique.png" },
-      { id: "viladegust", name: "Vila Degust", src: "/clientes/logotipos/viladegust.png" },
+      { id: "canguruulogo", name: "Canguruu", src: "/clientes/logotipos/canguruulogo.webp" },
+      { id: "comercialrodagem", name: "Comercial Rodagem", src: "/clientes/logotipos/comercialrodagem.webp" },
+      { id: "fornodeouro", name: "Forno de Ouro", src: "/clientes/logotipos/fornodeouro.webp" },
+      { id: "jovempipas", name: "Jovem Pipas", src: "/clientes/logotipos/jovempipas.webp" },
+      { id: "reidascarnes", name: "Rei das Carnes", src: "/clientes/logotipos/reidascarnes.webp" },
+      { id: "tdboutique", name: "TD Boutique", src: "/clientes/logotipos/tdboutique.webp" },
+      { id: "viladegust", name: "Vila Degust", src: "/clientes/logotipos/viladegust.webp" },
     ],
     []
   );

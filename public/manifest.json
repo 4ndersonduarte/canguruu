@@ -1,0 +1,28 @@
+{
+  "name": "Canguruu | Design, Estratégia & Dev",
+  "short_name": "Canguruu",
+  "description": "Design, Estratégia & Dev: artes e campanhas, identidade visual, sites e apps, vídeo e motion. Do rabisco ao produto.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffd400",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
