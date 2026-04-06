@@ -19,7 +19,7 @@ export default function ImageModal({
   onClose,
   title,
   src,
-  aspectClassName = "",
+  aspectClassName = "aspect-video",
   children,
   showCloseButton = true,
   showTitle = true,
@@ -53,39 +53,32 @@ export default function ImageModal({
             transition={{ type: "spring", damping: 25 }}
             className="fixed inset-4 sm:inset-8 md:inset-16 z-50 flex items-center justify-center"
           >
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className={`relative w-full h-full max-w-4xl max-h-[85vh] rounded-card border border-border overflow-hidden bg-bg flex flex-col ${aspectClassName}`}
-            >
-              {(showTitle && title) || showCloseButton ? (
-                <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border bg-bg/95">
-                  <div className="min-w-0 flex-1">
-                    {showTitle && title ? (
-                      <p className="font-mono text-xs text-text-secondary truncate">{title}</p>
-                    ) : null}
-                  </div>
-                  {showCloseButton ? (
-                    <button
-                      onClick={onClose}
-                      className="w-10 h-10 rounded-btn bg-bg/90 border border-border flex items-center justify-center text-text-primary hover:text-primary transition-colors"
-                      aria-label="Fechar"
-                      type="button"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
+            <div className={`relative w-full max-w-4xl ${aspectClassName} rounded-card border border-border overflow-hidden bg-bg`}>
+              {showCloseButton && (
+                <button
+                  onClick={onClose}
+                  className="absolute top-3 right-3 z-10 w-10 h-10 rounded-btn bg-bg/90 border border-border flex items-center justify-center text-text-primary hover:text-primary transition-colors"
+                  aria-label="Fechar"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
 
-              <div className="w-full flex-1 min-h-0">
-                {children ? (
-                  <div className="w-full h-full">{children}</div>
-                ) : src ? (
-                  <img src={src} alt={title || "Imagem"} className="w-full h-full object-contain bg-secondary" />
-                ) : null}
-              </div>
+              {showTitle && title && (
+                <div className="absolute left-3 right-14 top-3 z-10">
+                  <div className="inline-flex max-w-full rounded-btn bg-bg/90 border border-border px-3 py-2">
+                    <p className="font-mono text-xs text-text-secondary truncate">{title}</p>
+                  </div>
+                </div>
+              )}
+
+              {children ? (
+                <div className="w-full h-full">{children}</div>
+              ) : src ? (
+                <img src={src} alt={title || "Imagem"} className="w-full h-full object-contain bg-secondary" />
+              ) : null}
             </div>
           </motion.div>
         </>

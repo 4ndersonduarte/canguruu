@@ -48,12 +48,6 @@ export default function ClientsStories() {
   const openClient = (c: Client) => {
     setSelected(c);
     setOpen(true);
-    window.dispatchEvent(new CustomEvent("wa-fab-visible", { detail: { visible: false } }));
-  };
-
-  const closeModal = () => {
-    setOpen(false);
-    window.dispatchEvent(new CustomEvent("wa-fab-visible", { detail: { visible: true } }));
   };
 
   return (
@@ -92,9 +86,9 @@ export default function ClientsStories() {
 
       <ImageModal
         isOpen={open}
-        onClose={closeModal}
+        onClose={() => setOpen(false)}
         title={selected ? `${selected.name} • Stories` : "Stories"}
-        aspectClassName="max-w-sm aspect-[9/16]"
+        aspectClassName="max-w-sm"
         showCloseButton={false}
         showTitle={false}
       >
@@ -103,12 +97,7 @@ export default function ClientsStories() {
             <div className="flex-1 overflow-y-auto snap-y snap-mandatory">
               {selected.stories.map((src, idx) => (
                 <div key={`${selected.id}-${idx}`} className="w-full h-full snap-start">
-                  <img
-                    src={src}
-                    alt={`${selected.name} ${idx + 1}`}
-                    className="w-full h-full object-contain bg-bg"
-                    loading="eager"
-                  />
+                  <img src={src} alt={`${selected.name} ${idx + 1}`} className="w-full h-full object-cover" loading="eager" />
                 </div>
               ))}
             </div>
@@ -141,7 +130,7 @@ export default function ClientsStories() {
                   </div>
                 </div>
                 <button
-                  onClick={closeModal}
+                  onClick={() => setOpen(false)}
                   className="font-mono text-xs px-3 py-1.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
                   aria-label="Fechar"
                 >

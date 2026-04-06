@@ -6,7 +6,6 @@ import LogosSection from "@/components/LogosSection";
 import WorksGallery from "@/components/WorksGallery";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
       <WorksGallery />
       <Contact />
       <Footer />
-      <WhatsAppFloatingButton />
     </main>
   );
 }
