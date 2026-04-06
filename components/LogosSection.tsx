@@ -25,10 +25,10 @@ export default function LogosSection() {
 
   return (
     <section className="relative py-12 sm:py-16 px-4 sm:px-6 max-w-none mx-auto">
-      {/* Background image - sem limites */}
+      {/* Background image - otimizado WebP */}
       <div 
         className="absolute inset-0 bg-center bg-no-repeat opacity-40"
-        style={{ backgroundImage: 'url(/imagemfundo.png)', backgroundSize: 'auto' }}
+        style={{ backgroundImage: 'url(/imagemfundo.webp)', backgroundSize: 'cover' }}
       />
       
       {/* Content */}
