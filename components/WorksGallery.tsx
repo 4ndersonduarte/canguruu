@@ -193,11 +193,20 @@ export default function WorksGallery() {
     return ["Todos", ...unique];
   }, [works]);
 
+  const identityGroups = useMemo(() => {
+    const map = new Map<string, Work[]>();
+    for (const w of identityWorks) {
+      const current = map.get(w.client) || [];
+      current.push(w);
+      map.set(w.client, current);
+    }
+    return Array.from(map.entries());
+  }, [identityWorks]);
+
   const filteredWorks = useMemo(() => {
-    if (selectedTab === "Identidade visual") return identityWorks;
     if (selectedClient === "Todos") return works;
     return works.filter((w) => w.client === selectedClient);
-  }, [identityWorks, selectedClient, selectedTab, works]);
+  }, [selectedClient, works]);
 
   const openWork = (w: Work) => {
     setSelectedWork(w);
@@ -258,34 +267,71 @@ export default function WorksGallery() {
         </div>
       )}
 
-      <div className="columns-2 sm:columns-2 lg:columns-3 gap-3 sm:gap-4 [column-fill:_balance]">
-        {filteredWorks.map((w) => (
-          <motion.article
-            key={w.id}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full mb-3 sm:mb-4 break-inside-avoid rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 text-left"
-          >
-            {selectedTab === "Identidade visual" && w.badgeSrc && (
-              <div className="pointer-events-none absolute top-2 left-2 z-10">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-bg/90 border border-border overflow-hidden">
-                  <img src={w.badgeSrc} alt={w.badgeAlt || w.client} className="w-full h-full object-cover" loading="lazy" />
-                </div>
+      {selectedTab === "Identidade visual" ? (
+        <div className="space-y-8">
+          {identityGroups.map(([clientName, clientWorks]) => (
+            <div key={clientName}>
+              <div className="flex items-center gap-3 mb-4">
+                {clientBadges[clientName]?.src && (
+                  <div className="w-10 h-10 rounded-full bg-bg/90 border border-border overflow-hidden">
+                    <img
+                      src={clientBadges[clientName]!.src}
+                      alt={clientBadges[clientName]!.alt}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                <p className="font-display font-semibold text-base sm:text-lg">{clientName}</p>
               </div>
-            )}
-            <div className="w-full">
-              <button
-                type="button"
-                onClick={() => openWork(w)}
-                className="block w-full"
-                aria-label={`Pré-visualizar ${w.title}`}
-              >
-                <img src={w.src} alt={w.title} className="w-full h-auto block" loading="lazy" />
-              </button>
+
+              <div className="columns-2 sm:columns-2 lg:columns-3 gap-3 sm:gap-4 [column-fill:_balance]">
+                {clientWorks.map((w) => (
+                  <motion.article
+                    key={w.id}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                    className="w-full mb-3 sm:mb-4 break-inside-avoid rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 text-left"
+                  >
+                    <div className="w-full">
+                      <button
+                        type="button"
+                        onClick={() => openWork(w)}
+                        className="block w-full"
+                        aria-label="Pré-visualizar imagem"
+                      >
+                        <img src={w.src} alt={w.title} className="w-full h-auto block" loading="lazy" />
+                      </button>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
             </div>
-            {selectedTab !== "Identidade visual" && (
+          ))}
+        </div>
+      ) : (
+        <div className="columns-2 sm:columns-2 lg:columns-3 gap-3 sm:gap-4 [column-fill:_balance]">
+          {filteredWorks.map((w) => (
+            <motion.article
+              key={w.id}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full mb-3 sm:mb-4 break-inside-avoid rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 text-left"
+            >
+              <div className="w-full">
+                <button
+                  type="button"
+                  onClick={() => openWork(w)}
+                  className="block w-full"
+                  aria-label={`Pré-visualizar ${w.title}`}
+                >
+                  <img src={w.src} alt={w.title} className="w-full h-auto block" loading="lazy" />
+                </button>
+              </div>
               <div className="p-2 sm:p-3">
                 <p className="font-display font-semibold text-xs sm:text-sm truncate">{w.title}</p>
                 {w.description && (
@@ -294,10 +340,10 @@ export default function WorksGallery() {
                   </p>
                 )}
               </div>
-            )}
-          </motion.article>
-        ))}
-      </div>
+            </motion.article>
+          ))}
+        </div>
+      )}
 
       <ImageModal
         isOpen={open}
