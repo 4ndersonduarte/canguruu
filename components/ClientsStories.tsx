@@ -53,15 +53,22 @@ export default function ClientsStories() {
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
       <motion.h2
-        initial={false}
+        initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="font-display text-2xl md:text-3xl font-bold mb-6"
       >
         <span className="scribble-underline">Clientes</span>
       </motion.h2>
 
-      <div className="-mx-2 px-2 sm:mx-0 sm:px-0">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+        className="-mx-2 px-2 sm:mx-0 sm:px-0"
+      >
         <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory">
           {clients.map((c) => (
             <button
@@ -82,7 +89,7 @@ export default function ClientsStories() {
             </button>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       <ImageModal
         isOpen={open}

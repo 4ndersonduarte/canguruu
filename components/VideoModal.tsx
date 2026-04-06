@@ -19,6 +19,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl }: VideoModalProp
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             onClick={onClose}
             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
           />
@@ -26,7 +27,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl }: VideoModalProp
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", damping: 25 }}
+            transition={{ type: "spring", stiffness: 260, damping: 28, mass: 0.9 }}
             className="fixed inset-4 sm:inset-8 md:inset-16 z-50 flex items-center justify-center"
           >
             <div className="relative w-full max-w-4xl aspect-video rounded-card border border-border overflow-hidden bg-bg">

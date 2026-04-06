@@ -14,7 +14,11 @@ const container = {
 
 const item = {
   hidden: { y: 20, opacity: 0 },
-  show: { y: 0, opacity: 1 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 function ProjectImagePlaceholder({ label }: { label: string }) {
@@ -76,6 +80,7 @@ export default function Projects() {
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="font-display text-2xl md:text-3xl font-bold mb-8"
       >
         <span className="scribble-underline">Projetos em Destaque</span>

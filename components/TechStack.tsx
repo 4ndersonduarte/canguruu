@@ -24,9 +24,10 @@ export default function TechStack() {
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
       <motion.h2
-        initial={false}
+        initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="font-display text-2xl md:text-3xl font-bold mb-6"
       >
         <span className="scribble-underline">Nossa Pilha</span>
@@ -36,10 +37,10 @@ export default function TechStack() {
         {tools.map((tool) => (
           <motion.div
             key={tool.id}
-            initial={false}
+            initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-card border border-border bg-bg/70 overflow-hidden card-glow aspect-square flex items-center justify-center"
           >
             <img

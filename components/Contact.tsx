@@ -25,9 +25,10 @@ export default function Contact() {
   return (
     <section id="contato" className="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
       <motion.div
-        initial={false}
+        initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="rounded-card border border-border bg-bg/80 p-5 sm:p-6 md:p-8 card-glow overflow-hidden"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

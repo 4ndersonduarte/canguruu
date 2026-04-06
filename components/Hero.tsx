@@ -12,7 +12,11 @@ const container = {
 
 const item = {
   hidden: { y: 20, opacity: 0 },
-  show: { y: 0, opacity: 1 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 export default function Hero() {

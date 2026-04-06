@@ -12,7 +12,11 @@ const container = {
 
 const item = {
   hidden: { y: 24, opacity: 0 },
-  show: { y: 0, opacity: 1 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 const services = [
@@ -76,6 +80,7 @@ export default function Services() {
         initial={false}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="font-display text-2xl md:text-3xl font-bold mb-8"
       >
         <span className="scribble-underline">O Que Fazemos</span>

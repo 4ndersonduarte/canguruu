@@ -38,9 +38,10 @@ export default function LogosSection() {
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto">
         <motion.h2
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-2xl md:text-3xl font-bold mb-6"
         >
           <span className="scribble-underline">Logotipos</span>
@@ -50,10 +51,10 @@ export default function LogosSection() {
           {logos.map((logo) => (
             <motion.div
               key={logo.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
               className="rounded-card border border-border bg-bg/80 overflow-hidden card-glow transition-all duration-300 hover:-translate-y-1 aspect-square"
             >
               <div className="w-full h-full p-3 flex items-center justify-center">
