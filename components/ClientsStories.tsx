@@ -127,7 +127,12 @@ export default function ClientsStories() {
       const im = new Image();
       im.decoding = "async";
       im.src = u;
+      if (typeof (im as HTMLImageElement).decode === "function") {
+        (im as HTMLImageElement).decode().catch(() => undefined);
+      }
     };
+
+    for (const u of urls) preload(u);
 
     preload(urls[activeIdx]);
     preload(urls[activeIdx + 1]);
@@ -266,18 +271,11 @@ export default function ClientsStories() {
           {selected && selected.stories.length > 0 ? (
             <>
               <div
-                className="flex-1 relative"
+                className="flex-1 relative touch-manipulation"
                 onPointerDown={(e) => {
-                  e.preventDefault();
                   pointerStartXRef.current = e.clientX;
-                  try {
-                    (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
-                  } catch {
-                    // ignore
-                  }
                 }}
                 onPointerUp={(e) => {
-                  e.preventDefault();
                   const startX = pointerStartXRef.current;
                   pointerStartXRef.current = null;
                   if (startX === null) return;
@@ -293,7 +291,6 @@ export default function ClientsStories() {
                   if (relX < rect.width / 2) goPrev();
                   else goNext();
                 }}
-                style={{ touchAction: "none" }}
               >
                 <img
                   ref={imgRef}
@@ -307,27 +304,6 @@ export default function ClientsStories() {
                     elapsedRef.current = 0;
                     setIsImageLoaded(true);
                   }}
-                />
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    goPrev();
-                  }}
-                  className="absolute inset-y-0 left-0 w-1/2 z-10 pointer-events-auto"
-                  aria-label="Story anterior"
-                />
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    goNext();
-                  }}
-                  className="absolute inset-y-0 right-0 w-1/2 z-10 pointer-events-auto"
-                  aria-label="Próximo story"
                 />
               </div>
             </>
@@ -350,7 +326,7 @@ export default function ClientsStories() {
                     </div>
                   </div>
                   <div className="min-w-0">
-                    <p className="font-display font-semibold text-sm text-secondary truncate">{selected.name}</p>
+                    <p className="font-display font-semibold text-sm text-text-primary truncate">{selected.name}</p>
                     <p className="font-mono text-[10px] text-text-secondary truncate">
                       {selected.stories.length > 0 ? `${selected.stories.length} itens` : "Conteúdo em breve"}
                     </p>
@@ -367,7 +343,7 @@ export default function ClientsStories() {
                           goPrev();
                         }}
                         disabled={activeIdx === 0}
-                        className="w-9 h-9 rounded-btn border border-border/60 text-secondary font-medium hover:bg-secondary hover:text-bg transition-colors disabled:opacity-50 flex items-center justify-center"
+                        className="w-9 h-9 rounded-btn border border-border/60 text-text-primary font-medium hover:bg-secondary hover:text-bg transition-colors disabled:opacity-50 flex items-center justify-center"
                         aria-label="Anterior"
                       >
                         ‹
@@ -379,7 +355,7 @@ export default function ClientsStories() {
                           e.stopPropagation();
                           goNext();
                         }}
-                        className="w-9 h-9 rounded-btn border border-border/60 text-secondary font-medium hover:bg-secondary hover:text-bg transition-colors flex items-center justify-center"
+                        className="w-9 h-9 rounded-btn border border-border/60 text-text-primary font-medium hover:bg-secondary hover:text-bg transition-colors flex items-center justify-center"
                         aria-label="Próximo"
                       >
                         ›
