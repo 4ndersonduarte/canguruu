@@ -101,6 +101,8 @@ export default function ClientsStories() {
   const elapsedRef = useRef(0);
   const pointerStartXRef = useRef<number | null>(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const preloadedRef = useRef<Set<string>>(new Set());
 
   const openClient = (c: Client) => {
     setSelected(c);
@@ -114,6 +116,33 @@ export default function ClientsStories() {
     elapsedRef.current = 0;
     setIsImageLoaded(false);
   }, [open, selected?.id]);
+
+  useEffect(() => {
+    if (!open || !selected) return;
+    const urls = selected.stories ?? [];
+    if (urls.length === 0) return;
+
+    const preload = (u?: string) => {
+      if (!u) return;
+      if (preloadedRef.current.has(u)) return;
+      preloadedRef.current.add(u);
+      const im = new Image();
+      im.decoding = "async";
+      im.src = u;
+    };
+
+    preload(urls[activeIdx]);
+    preload(urls[activeIdx + 1]);
+    preload(urls[activeIdx - 1]);
+  }, [open, selected?.id, activeIdx, selected]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (isImageLoaded) return;
+    if (imgRef.current && imgRef.current.complete) {
+      setIsImageLoaded(true);
+    }
+  }, [open, activeIdx, isImageLoaded]);
 
   useEffect(() => {
     if (!open || !selected) return;
@@ -289,10 +318,13 @@ export default function ClientsStories() {
                 }}
               >
                 <img
+                  ref={imgRef}
                   src={selected.stories[activeIdx]}
                   alt={`${selected.name} ${activeIdx + 1}`}
                   className="w-full h-full object-cover pointer-events-none"
                   loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   onLoad={() => {
                     elapsedRef.current = 0;
                     setProgress(0);
@@ -302,13 +334,21 @@ export default function ClientsStories() {
 
                 <button
                   type="button"
-                  onClick={goPrev}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goPrev();
+                  }}
                   className="absolute inset-y-0 left-0 w-1/2 z-10 pointer-events-auto"
                   aria-label="Story anterior"
                 />
                 <button
                   type="button"
-                  onClick={goNext}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goNext();
+                  }}
                   className="absolute inset-y-0 right-0 w-1/2 z-10 pointer-events-auto"
                   aria-label="Próximo story"
                 />
@@ -344,7 +384,11 @@ export default function ClientsStories() {
                     <>
                       <button
                         type="button"
-                        onClick={goPrev}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          goPrev();
+                        }}
                         disabled={activeIdx === 0}
                         className="w-9 h-9 rounded-btn border border-border/60 text-secondary font-medium hover:bg-secondary hover:text-bg transition-colors disabled:opacity-50 flex items-center justify-center"
                         aria-label="Anterior"
@@ -353,7 +397,11 @@ export default function ClientsStories() {
                       </button>
                       <button
                         type="button"
-                        onClick={goNext}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          goNext();
+                        }}
                         className="w-9 h-9 rounded-btn border border-border/60 text-secondary font-medium hover:bg-secondary hover:text-bg transition-colors flex items-center justify-center"
                         aria-label="Próximo"
                       >
