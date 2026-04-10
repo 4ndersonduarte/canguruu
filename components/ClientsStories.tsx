@@ -95,14 +95,13 @@ export default function ClientsStories() {
   const [selected, setSelected] = useState<Client | null>(null);
 
   const STORY_DURATION_MS = 5000;
-  const PROGRESS_TICK_MS = 50;
   const [activeIdx, setActiveIdx] = useState(0);
-  const [progress, setProgress] = useState(0);
   const elapsedRef = useRef(0);
   const pointerStartXRef = useRef<number | null>(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const preloadedRef = useRef<Set<string>>(new Set());
+  const expireTimerRef = useRef<number | null>(null);
 
   const openClient = (c: Client) => {
     setSelected(c);
@@ -112,7 +111,6 @@ export default function ClientsStories() {
   useEffect(() => {
     if (!open || !selected) return;
     setActiveIdx(0);
-    setProgress(0);
     elapsedRef.current = 0;
     setIsImageLoaded(false);
   }, [open, selected?.id]);
@@ -149,26 +147,30 @@ export default function ClientsStories() {
     if (!selected.stories || selected.stories.length === 0) return;
     if (!isImageLoaded) return;
 
-    const timer = window.setInterval(() => {
-      elapsedRef.current += PROGRESS_TICK_MS;
-      const nextProgress = Math.min(1, elapsedRef.current / STORY_DURATION_MS);
-      setProgress(nextProgress);
+    if (expireTimerRef.current) {
+      window.clearTimeout(expireTimerRef.current);
+      expireTimerRef.current = null;
+    }
 
-      if (elapsedRef.current >= STORY_DURATION_MS) {
-        elapsedRef.current = 0;
-        setProgress(0);
-        setActiveIdx((prev) => {
-          const next = prev + 1;
-          if (next >= selected.stories.length) {
-            setOpen(false);
-            return 0;
-          }
-          return next;
-        });
+    expireTimerRef.current = window.setTimeout(() => {
+      elapsedRef.current = 0;
+      setIsImageLoaded(false);
+      setActiveIdx((prev) => {
+        const next = prev + 1;
+        if (next >= selected.stories.length) {
+          setOpen(false);
+          return 0;
+        }
+        return next;
+      });
+    }, STORY_DURATION_MS);
+
+    return () => {
+      if (expireTimerRef.current) {
+        window.clearTimeout(expireTimerRef.current);
+        expireTimerRef.current = null;
       }
-    }, PROGRESS_TICK_MS);
-
-    return () => window.clearInterval(timer);
+    };
   }, [open, selected, activeIdx, isImageLoaded]);
 
   useEffect(() => {
@@ -186,7 +188,6 @@ export default function ClientsStories() {
   const goPrev = () => {
     if (!selected || selected.stories.length === 0) return;
     elapsedRef.current = 0;
-    setProgress(0);
     setIsImageLoaded(false);
     setActiveIdx((prev) => Math.max(0, prev - 1));
   };
@@ -194,7 +195,6 @@ export default function ClientsStories() {
   const goNext = () => {
     if (!selected || selected.stories.length === 0) return;
     elapsedRef.current = 0;
-    setProgress(0);
     setIsImageLoaded(false);
     setActiveIdx((prev) => {
       const next = prev + 1;
@@ -265,15 +265,6 @@ export default function ClientsStories() {
         <div className="w-full h-full flex flex-col bg-bg">
           {selected && selected.stories.length > 0 ? (
             <>
-              <div className="px-4 pt-3">
-                <div className="h-1.5 w-full rounded-full bg-border/40 overflow-hidden">
-                  <div
-                    className="h-full bg-primary"
-                    style={{ width: `${Math.round(progress * 100)}%` }}
-                  />
-                </div>
-              </div>
-
               <div
                 className="flex-1 relative"
                 onPointerDown={(e) => {
@@ -327,7 +318,6 @@ export default function ClientsStories() {
                   fetchPriority="high"
                   onLoad={() => {
                     elapsedRef.current = 0;
-                    setProgress(0);
                     setIsImageLoaded(true);
                   }}
                 />
