@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import ImageModal from "./ImageModal";
 
@@ -11,36 +11,85 @@ type Client = {
   stories: string[];
 };
 
+type ApiStory = {
+  id: string;
+  client_id: string;
+  url: string;
+  alt: string | null;
+  sort_order: number;
+  created_at: string;
+  preview_url: string | null;
+};
+
+type ApiClient = {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  story_icon_url: string | null;
+  created_at: string;
+  stories: ApiStory[];
+};
+
 export default function ClientsStories() {
-  const clients: Client[] = useMemo(
-    () => [
-      {
-        id: "bmpes",
-        name: "BMPES",
-        logoSrc: "/clientes/bmpes.webp",
-        stories: ["/clientes/stories/bmpes/bmstory.webp"],
-      },
-      {
-        id: "hiper",
-        name: "Hipermercado Coração",
-        logoSrc: "/clientes/hiper.webp",
-        stories: ["/clientes/stories/hiper/hiper.webp"],
-      },
-      {
-        id: "viladegust",
-        name: "Vila Degust",
-        logoSrc: "/clientes/rai.webp",
-        stories: ["/clientes/stories/viladegust/viladegust.webp"],
-      },
-      {
-        id: "taine",
-        name: "TD Boutique Closet",
-        logoSrc: "/clientes/taine.webp",
-        stories: [],
-      },
-    ],
-    []
-  );
+  const [clients, setClients] = useState<Client[]>([]);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const run = async () => {
+      try {
+        const res = await fetch("/api/public/clients", { cache: "no-store" });
+        const text = await res.text();
+        let json: { clients?: ApiClient[]; error?: string } | null = null;
+
+        try {
+          json = JSON.parse(text) as { clients?: ApiClient[]; error?: string };
+        } catch {
+          json = null;
+        }
+
+        if (!mounted) return;
+
+        if (!res.ok) {
+          setApiError(
+            json?.error ?? `Falha ao carregar clientes (HTTP ${res.status}).`
+          );
+          setClients([]);
+          return;
+        }
+
+        const mapped: Client[] = (json?.clients ?? []).map((c) => {
+          const icon = c.story_icon_url || c.logo_url || "";
+          const logoSrc = icon || "";
+          const stories = (c.stories ?? [])
+            .map((s) => s.preview_url)
+            .filter((u): u is string => Boolean(u));
+
+          return {
+            id: c.slug || c.id,
+            name: c.name,
+            logoSrc,
+            stories,
+          };
+        });
+
+        setClients(mapped);
+        setApiError(null);
+      } catch {
+        if (!mounted) return;
+        setApiError("Falha ao carregar clientes.");
+        setClients([]);
+      }
+    };
+
+    run();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Client | null>(null);
@@ -69,6 +118,9 @@ export default function ClientsStories() {
         transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
         className="-mx-2 px-2 sm:mx-0 sm:px-0"
       >
+        {apiError ? (
+          <div className="text-sm text-red-500 mb-4">{apiError}</div>
+        ) : null}
         <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory">
           {clients.map((c) => (
             <button
@@ -80,7 +132,11 @@ export default function ClientsStories() {
               <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-full group-hover:shadow-glow transition-shadow">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary via-amber-400 to-pink-500 animate-[spin_10s_linear_infinite] motion-reduce:animate-none pointer-events-none" />
                 <div className="absolute inset-[3px] sm:inset-[4px] rounded-full bg-bg/90 border border-border overflow-hidden">
-                  <img src={c.logoSrc} alt={c.name} className="w-full h-full object-cover" />
+                  {c.logoSrc ? (
+                    <img src={c.logoSrc} alt={c.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full" />
+                  )}
                 </div>
               </div>
               <p className="font-mono text-[9px] sm:text-xs text-text-secondary mt-1.5 text-center max-w-16 sm:max-w-20 truncate">
@@ -112,9 +168,6 @@ export default function ClientsStories() {
             <div className="flex-1 flex items-center justify-center px-6 text-center">
               <div>
                 <p className="font-display text-bg text-lg font-semibold">Stories 9:16</p>
-                <p className="font-mono text-xs text-bg/80 mt-2">
-                  Em breve: imagens por cliente (ex: /stories/{selected?.id}/001.jpg)
-                </p>
               </div>
             </div>
           )}

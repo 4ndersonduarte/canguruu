@@ -1,0 +1,9 @@
+export default function AdminLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <section className="min-h-screen bg-bg text-text-primary">
+      {children}
+    </section>
+  );
+}

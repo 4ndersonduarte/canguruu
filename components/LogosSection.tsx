@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 type Logo = {
@@ -9,19 +9,66 @@ type Logo = {
   src: string;
 };
 
+type ApiClient = {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  created_at: string;
+};
+
 export default function LogosSection() {
-  const logos: Logo[] = useMemo(
-    () => [
-      { id: "canguruulogo", name: "Canguruu", src: "/clientes/logotipos/canguruulogo.webp" },
-      { id: "comercialrodagem", name: "Comercial Rodagem", src: "/clientes/logotipos/comercialrodagem.webp" },
-      { id: "fornodeouro", name: "Forno de Ouro", src: "/clientes/logotipos/fornodeouro.webp" },
-      { id: "jovempipas", name: "Jovem Pipas", src: "/clientes/logotipos/jovempipas.webp" },
-      { id: "reidascarnes", name: "Rei das Carnes", src: "/clientes/logotipos/reidascarnes.webp" },
-      { id: "tdboutique", name: "TD Boutique", src: "/clientes/logotipos/tdboutique.webp" },
-      { id: "viladegust", name: "Vila Degust", src: "/clientes/logotipos/viladegust.webp" },
-    ],
-    []
-  );
+  const [logos, setLogos] = useState<Logo[]>([]);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const run = async () => {
+      try {
+        const res = await fetch("/api/public/clients", { cache: "no-store" });
+        const text = await res.text();
+        let json: { clients?: ApiClient[]; error?: string } | null = null;
+
+        try {
+          json = JSON.parse(text) as { clients?: ApiClient[]; error?: string };
+        } catch {
+          json = null;
+        }
+
+        if (!mounted) return;
+
+        if (!res.ok) {
+          setApiError(
+            json?.error ?? `Falha ao carregar logotipos (HTTP ${res.status}).`
+          );
+          setLogos([]);
+          return;
+        }
+
+        const mapped: Logo[] = (json?.clients ?? [])
+          .filter((c) => Boolean(c.logo_url))
+          .map((c) => ({
+            id: c.slug || c.id,
+            name: c.name,
+            src: c.logo_url as string,
+          }));
+
+        setLogos(mapped);
+        setApiError(null);
+      } catch {
+        if (!mounted) return;
+        setApiError("Falha ao carregar logotipos.");
+        setLogos([]);
+      }
+    };
+
+    run();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <section className="relative py-12 sm:py-16 px-4 sm:px-6 max-w-none mx-auto">
@@ -46,6 +93,10 @@ export default function LogosSection() {
         >
           <span className="scribble-underline">Logotipos</span>
         </motion.h2>
+
+        {apiError ? (
+          <div className="text-sm text-red-500 mb-6">{apiError}</div>
+        ) : null}
 
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3">
           {logos.map((logo) => (

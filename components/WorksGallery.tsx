@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import ImageModal from "@/components/ImageModal";
 
@@ -14,179 +14,163 @@ type Work = {
   badgeAlt?: string;
 };
 
+type ApiWorkAsset = {
+  id: string;
+  work_id: string;
+  url: string;
+  alt: string | null;
+  sort_order: number;
+  created_at: string;
+  preview_url: string | null;
+};
+
+type ApiWork = {
+  id: string;
+  title: string;
+  description: string | null;
+  client_id: string;
+  category_id: string;
+  cover_asset_id: string | null;
+  created_at: string;
+  clients: { name: string; slug: string; logo_url: string | null } | null;
+  categories: { name: string; slug: string } | null;
+  assets: ApiWorkAsset[];
+};
+
 export default function WorksGallery() {
   const [selectedTab, setSelectedTab] = useState<"Trabalhos" | "Identidade visual">("Trabalhos");
   const [selectedClient, setSelectedClient] = useState<string>("Todos");
   const [open, setOpen] = useState(false);
   const [selectedWork, setSelectedWork] = useState<Work | null>(null);
 
-  const clientBadges = useMemo(() => {
-    return {
-      "Vila Degust": {
-        src: "/clientes/logotipos/viladegust.webp",
-        alt: "Vila Degust",
-      },
-    } as Record<string, { src: string; alt: string }>;
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+
+  const [apiWorks, setApiWorks] = useState<ApiWork[]>([]);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const run = async () => {
+      try {
+        const res = await fetch("/api/public/works", { cache: "no-store" });
+        const text = await res.text();
+        let json: { works?: ApiWork[]; error?: string } | null = null;
+
+        try {
+          json = JSON.parse(text) as { works?: ApiWork[]; error?: string };
+        } catch {
+          json = null;
+        }
+
+        if (!mounted) return;
+
+        if (!res.ok) {
+          const msg =
+            json?.error ??
+            `Falha ao carregar trabalhos (HTTP ${res.status}). ${text.slice(0, 180)}`;
+          setApiError(msg);
+          return;
+        }
+
+        setApiWorks(json?.works ?? []);
+        setApiError(null);
+      } catch {
+        if (!mounted) return;
+        setApiError("Falha ao carregar trabalhos.");
+      }
+    };
+
+    run();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const works: Work[] = useMemo(
-    () => [
-      {
-        id: "acelerabanner",
-        title: "Acelera Coração",
-        src: "/trabalhos/aceleracoracao.webp",
-        description: "Banner promocional (campanha).",
-        client: "Acelera Coração",
-      },
-      {
-        id: "canguruu",
-        title: "Canguruu",
-        src: "/trabalhos/canguruu.webp",
-        description: "Arte e identidade visual para marca Canguruu.",
-        client: "Canguruu",
-      },
-      {
-        id: "canguruulogo",
-        title: "Canguruu Logo",
-        src: "/trabalhos/canguruulogo.webp",
-        description: "Logo Canguruu (versão final).",
-        client: "Canguruu",
-      },
-      {
-        id: "dilab",
-        title: "Dilab",
-        src: "/trabalhos/dilab.webp",
-        description: "Design de materiais promocionais e institucionais.",
-        client: "Dilab",
-      },
-      {
-        id: "dilab3",
-        title: "Dilab",
-        src: "/trabalhos/dilab3.webp",
-        description: "Design de materiais promocionais e institucionais.",
-        client: "Dilab",
-      },
-      {
-        id: "dilabagenda",
-        title: "Dilab",
-        src: "/trabalhos/dilabagenda.webp",
-        description: "Design de materiais promocionais e institucionais.",
-        client: "Dilab",
-      },
-      {
-        id: "forno",
-        title: "Forno de Ouro",
-        src: "/trabalhos/forno.webp",
-        description: "Materiais institucionais e branding.",
-        client: "Forno de Ouro",
-      },
-      {
-        id: "forno1",
-        title: "Forno de Ouro",
-        src: "/trabalhos/forno1.webp",
-        description: "Materiais institucionais e branding.",
-        client: "Forno de Ouro",
-      },
-      {
-        id: "forno2",
-        title: "Forno de Ouro",
-        src: "/trabalhos/forno2.webp",
-        description: "Materiais institucionais e branding.",
-        client: "Forno de Ouro",
-      },
-      {
-        id: "forno3",
-        title: "Forno de Ouro",
-        src: "/trabalhos/forno3.webp",
-        description: "Materiais institucionais e branding.",
-        client: "Forno de Ouro",
-      },
-      {
-        id: "cupons",
-        title: "Cupom Acelera Coração",
-        src: "/trabalhos/cupons.webp",
-        description: "Cupom criado para campanha Acelera Coração.",
-        client: "Acelera Coração",
-      },
-      {
-        id: "lojaonline",
-        title: "Loja Online",
-        src: "/trabalhos/lojaonline.webp",
-        description: "Layout/arte para vitrine e loja online.",
-        client: "Loja Online",
-      },
-    ],
-    []
-  );
+  const clientBadgesDynamic = useMemo(() => {
+    const map: Record<string, { src: string; alt: string }> = {};
 
-  const identityWorks: Work[] = useMemo(
-    () => [
-      {
-        id: "vila1",
-        title: "Identidade visual",
-        src: "/trabalhos/identidade%20visual/vila1.webp",
-        description: "",
-        client: "Vila Degust",
-        badgeSrc: clientBadges["Vila Degust"]?.src,
-        badgeAlt: clientBadges["Vila Degust"]?.alt,
-      },
-      {
-        id: "vila2",
-        title: "Identidade visual",
-        src: "/trabalhos/identidade%20visual/vila2.webp",
-        description: "",
-        client: "Vila Degust",
-        badgeSrc: clientBadges["Vila Degust"]?.src,
-        badgeAlt: clientBadges["Vila Degust"]?.alt,
-      },
-      {
-        id: "vila3",
-        title: "Identidade visual",
-        src: "/trabalhos/identidade%20visual/vila3.webp",
-        description: "",
-        client: "Vila Degust",
-        badgeSrc: clientBadges["Vila Degust"]?.src,
-        badgeAlt: clientBadges["Vila Degust"]?.alt,
-      },
-      {
-        id: "vila4",
-        title: "Identidade visual",
-        src: "/trabalhos/identidade%20visual/vila4.webp",
-        description: "",
-        client: "Vila Degust",
-        badgeSrc: clientBadges["Vila Degust"]?.src,
-        badgeAlt: clientBadges["Vila Degust"]?.alt,
-      },
-      {
-        id: "vila5",
-        title: "Identidade visual",
-        src: "/trabalhos/identidade%20visual/vila5.webp",
-        description: "",
-        client: "Vila Degust",
-        badgeSrc: clientBadges["Vila Degust"]?.src,
-        badgeAlt: clientBadges["Vila Degust"]?.alt,
-      },
-      {
-        id: "vila6",
-        title: "Identidade visual",
-        src: "/trabalhos/identidade%20visual/vila6.webp",
-        description: "",
-        client: "Vila Degust",
-        badgeSrc: clientBadges["Vila Degust"]?.src,
-        badgeAlt: clientBadges["Vila Degust"]?.alt,
-      },
-      {
-        id: "vila7",
-        title: "Identidade visual",
-        src: "/trabalhos/identidade%20visual/vila7.webp",
-        description: "",
-        client: "Vila Degust",
-        badgeSrc: clientBadges["Vila Degust"]?.src,
-        badgeAlt: clientBadges["Vila Degust"]?.alt,
-      },
-    ],
-    [clientBadges]
-  );
+    for (const w of apiWorks) {
+      const name = w.clients?.name;
+      const logo = w.clients?.logo_url;
+      if (!name) continue;
+
+      if (!map[name] && logo) {
+        map[name] = { src: logo, alt: name };
+      }
+    }
+
+    return map;
+  }, [apiWorks]);
+
+  const works: Work[] = useMemo(() => {
+    const list: Work[] = [];
+
+    for (const w of apiWorks) {
+      const categorySlug = w.categories?.slug ?? "";
+      if (categorySlug === "identidade-visual" || categorySlug === "identidade%20visual") {
+        continue;
+      }
+
+      const clientName = w.clients?.name ?? "-";
+      const assets = (w.assets ?? [])
+        .filter((a) => Boolean(a.preview_url))
+        .slice()
+        .sort((a, b) => {
+          if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+          return String(a.created_at).localeCompare(String(b.created_at));
+        });
+      for (const a of assets) {
+        const src = a.preview_url as string;
+        list.push({
+          id: a.id,
+          title: w.title,
+          src,
+          description: w.description ?? "",
+          client: clientName,
+        });
+      }
+    }
+
+    return list;
+  }, [apiWorks]);
+
+  const identityWorks: Work[] = useMemo(() => {
+    const list: Work[] = [];
+
+    for (const w of apiWorks) {
+      const categorySlug = w.categories?.slug ?? "";
+      if (categorySlug !== "identidade-visual" && categorySlug !== "identidade%20visual") {
+        continue;
+      }
+
+      const assets = (w.assets ?? [])
+        .filter((a) => Boolean(a.preview_url))
+        .slice()
+        .sort((a, b) => {
+          if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+          return String(a.created_at).localeCompare(String(b.created_at));
+        });
+
+      for (const a of assets) {
+        if (!a.preview_url) continue;
+        const clientName = w.clients?.name ?? "-";
+
+        list.push({
+          id: a.id,
+          title: "Identidade visual",
+          src: a.preview_url,
+          description: "",
+          client: clientName,
+          badgeSrc: clientBadgesDynamic[clientName]?.src,
+          badgeAlt: clientBadgesDynamic[clientName]?.alt,
+        });
+      }
+    }
+
+    return list;
+  }, [apiWorks, clientBadgesDynamic]);
 
   const clients = useMemo(() => {
     const unique = Array.from(new Set(works.map((w) => w.client)));
@@ -211,6 +195,13 @@ export default function WorksGallery() {
   const openWork = (w: Work) => {
     setSelectedWork(w);
     setOpen(true);
+  };
+
+  const markLoaded = (key: string) => {
+    setLoadedImages((prev) => {
+      if (prev[key]) return prev;
+      return { ...prev, [key]: true };
+    });
   };
 
   return (
@@ -245,6 +236,10 @@ export default function WorksGallery() {
         })}
       </div>
 
+      {apiError ? (
+        <div className="text-sm text-red-500 mb-6">{apiError}</div>
+      ) : null}
+
       {selectedTab === "Trabalhos" && (
         <div className="flex flex-wrap gap-2 mb-6">
           {clients.map((c) => {
@@ -272,11 +267,11 @@ export default function WorksGallery() {
           {identityGroups.map(([clientName, clientWorks]) => (
             <div key={clientName}>
               <div className="flex items-center gap-3 mb-4">
-                {clientBadges[clientName]?.src && (
+                {clientBadgesDynamic[clientName]?.src && (
                   <div className="w-10 h-10 rounded-full bg-bg/90 border border-border overflow-hidden">
                     <img
-                      src={clientBadges[clientName]!.src}
-                      alt={clientBadges[clientName]!.alt}
+                      src={clientBadgesDynamic[clientName]!.src}
+                      alt={clientBadgesDynamic[clientName]!.alt}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -302,7 +297,22 @@ export default function WorksGallery() {
                         className="block w-full"
                         aria-label="Pré-visualizar imagem"
                       >
-                        <img src={w.src} alt={w.title} className="w-full h-auto block" loading="lazy" />
+                        <div className="relative w-full">
+                          {!loadedImages[w.id] ? (
+                            <div className="absolute inset-0 bg-bg/60 animate-pulse" />
+                          ) : null}
+                          <img
+                            src={w.src}
+                            alt={w.title}
+                            className={
+                              "w-full h-auto block transition-opacity duration-300 " +
+                              (loadedImages[w.id] ? "opacity-100" : "opacity-0")
+                            }
+                            loading="lazy"
+                            decoding="async"
+                            onLoad={() => markLoaded(w.id)}
+                          />
+                        </div>
                       </button>
                     </div>
                   </motion.article>
@@ -329,7 +339,22 @@ export default function WorksGallery() {
                   className="block w-full"
                   aria-label={`Pré-visualizar ${w.title}`}
                 >
-                  <img src={w.src} alt={w.title} className="w-full h-auto block" loading="lazy" />
+                  <div className="relative w-full">
+                    {!loadedImages[w.id] ? (
+                      <div className="absolute inset-0 bg-bg/60 animate-pulse" />
+                    ) : null}
+                    <img
+                      src={w.src}
+                      alt={w.title}
+                      className={
+                        "w-full h-auto block transition-opacity duration-300 " +
+                        (loadedImages[w.id] ? "opacity-100" : "opacity-0")
+                      }
+                      loading="lazy"
+                      decoding="async"
+                      onLoad={() => markLoaded(w.id)}
+                    />
+                  </div>
                 </button>
               </div>
               <div className="p-2 sm:p-3">
