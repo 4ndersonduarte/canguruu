@@ -35,6 +35,8 @@ export default function ClientsStories() {
   const [clients, setClients] = useState<Client[]>([]);
   const [apiError, setApiError] = useState<string | null>(null);
 
+  const storyDurationMs = 5000;
+
   useEffect(() => {
     let mounted = true;
 
@@ -93,11 +95,88 @@ export default function ClientsStories() {
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Client | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [pressing, setPressing] = useState(false);
+
+  const storyCount = selected?.stories.length ?? 0;
+  const activeSrc = selected?.stories[activeIdx] ?? null;
+
+  const progressWidth = useMemo(() => {
+    const p = Number.isFinite(progress) ? Math.min(1, Math.max(0, progress)) : 0;
+    return `${p * 100}%`;
+  }, [progress]);
 
   const openClient = (c: Client) => {
     setSelected(c);
+    setActiveIdx(0);
+    setProgress(0);
     setOpen(true);
   };
+
+  const closeModal = () => {
+    setOpen(false);
+    setPressing(false);
+    setProgress(0);
+    setActiveIdx(0);
+  };
+
+  const goPrev = () => {
+    if (!selected) return;
+    setProgress(0);
+    setActiveIdx((i) => Math.max(0, i - 1));
+  };
+
+  const goNext = () => {
+    if (!selected) return;
+    setProgress(0);
+    setActiveIdx((i) => {
+      const next = i + 1;
+      if (next >= (selected.stories?.length ?? 0)) {
+        closeModal();
+        return i;
+      }
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    if (!open || !selected || storyCount === 0) return;
+    if (pressing) return;
+
+    let raf = 0;
+    let start = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const next = elapsed / storyDurationMs;
+      if (next >= 1) {
+        setProgress(1);
+        goNext();
+        return;
+      }
+      setProgress(next);
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      start = 0;
+    };
+  }, [open, selected, activeIdx, pressing, storyCount]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") goNext();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, selected]);
 
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -149,20 +228,68 @@ export default function ClientsStories() {
 
       <ImageModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={closeModal}
         title={selected ? `${selected.name} • Stories` : "Stories"}
-        aspectClassName="max-w-sm"
+        aspectClassName="max-w-sm aspect-[9/16]"
         showCloseButton={false}
         showTitle={false}
       >
         <div className="w-full h-full flex flex-col bg-bg">
           {selected && selected.stories.length > 0 ? (
-            <div className="flex-1 overflow-y-auto snap-y snap-mandatory">
-              {selected.stories.map((src, idx) => (
-                <div key={`${selected.id}-${idx}`} className="w-full h-full snap-start">
-                  <img src={src} alt={`${selected.name} ${idx + 1}`} className="w-full h-full object-cover" loading="eager" />
+            <div className="relative flex-1 min-h-0 bg-bg">
+              <div className="absolute top-0 left-0 right-0 z-10 px-3 pt-3">
+                <div className="flex gap-1">
+                  {selected.stories.map((_, idx) => {
+                    const isDone = idx < activeIdx;
+                    const isActive = idx === activeIdx;
+                    return (
+                      <div key={`${selected.id}-bar-${idx}`} className="flex-1 h-1 rounded-full bg-white/25 overflow-hidden">
+                        <div
+                          className="h-full bg-white"
+                          style={{
+                            width: isDone ? "100%" : isActive ? progressWidth : "0%",
+                            transition: isActive ? "none" : "width 120ms linear",
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
+              </div>
+
+              <div
+                className="absolute inset-0"
+                onMouseDown={() => setPressing(true)}
+                onMouseUp={() => setPressing(false)}
+                onMouseLeave={() => setPressing(false)}
+                onTouchStart={() => setPressing(true)}
+                onTouchEnd={() => setPressing(false)}
+              >
+                <div className="absolute inset-0 grid grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className="w-full h-full"
+                    aria-label="Story anterior"
+                  />
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className="w-full h-full"
+                    aria-label="Próximo story"
+                  />
+                </div>
+
+                {activeSrc ? (
+                  <img
+                    src={activeSrc}
+                    alt={`${selected.name} ${activeIdx + 1}`}
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                    draggable={false}
+                  />
+                ) : null}
+              </div>
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center px-6 text-center">
@@ -190,7 +317,7 @@ export default function ClientsStories() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={closeModal}
                   className="font-mono text-xs px-3 py-1.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
                   aria-label="Fechar"
                 >
