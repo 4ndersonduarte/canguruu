@@ -100,6 +100,7 @@ export default function ClientsStories() {
   const [progress, setProgress] = useState(0);
   const elapsedRef = useRef(0);
   const pointerStartXRef = useRef<number | null>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const openClient = (c: Client) => {
     setSelected(c);
@@ -111,11 +112,13 @@ export default function ClientsStories() {
     setActiveIdx(0);
     setProgress(0);
     elapsedRef.current = 0;
+    setIsImageLoaded(false);
   }, [open, selected?.id]);
 
   useEffect(() => {
     if (!open || !selected) return;
     if (!selected.stories || selected.stories.length === 0) return;
+    if (!isImageLoaded) return;
 
     const timer = window.setInterval(() => {
       elapsedRef.current += PROGRESS_TICK_MS;
@@ -137,7 +140,7 @@ export default function ClientsStories() {
     }, PROGRESS_TICK_MS);
 
     return () => window.clearInterval(timer);
-  }, [open, selected, activeIdx]);
+  }, [open, selected, activeIdx, isImageLoaded]);
 
   useEffect(() => {
     if (!open) return;
@@ -155,6 +158,7 @@ export default function ClientsStories() {
     if (!selected || selected.stories.length === 0) return;
     elapsedRef.current = 0;
     setProgress(0);
+    setIsImageLoaded(false);
     setActiveIdx((prev) => Math.max(0, prev - 1));
   };
 
@@ -162,6 +166,7 @@ export default function ClientsStories() {
     if (!selected || selected.stories.length === 0) return;
     elapsedRef.current = 0;
     setProgress(0);
+    setIsImageLoaded(false);
     setActiveIdx((prev) => {
       const next = prev + 1;
       if (next >= selected.stories.length) {
@@ -254,12 +259,45 @@ export default function ClientsStories() {
                   if (dx > 0) goPrev();
                   else goNext();
                 }}
+                onTouchStart={(e) => {
+                  const t = e.touches?.[0];
+                  if (!t) return;
+                  pointerStartXRef.current = t.clientX;
+                }}
+                onTouchEnd={(e) => {
+                  const startX = pointerStartXRef.current;
+                  pointerStartXRef.current = null;
+                  const t = e.changedTouches?.[0];
+                  if (startX === null || !t) return;
+                  const dx = t.clientX - startX;
+                  if (Math.abs(dx) >= 40) {
+                    if (dx > 0) goPrev();
+                    else goNext();
+                    return;
+                  }
+
+                  const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+                  const relX = t.clientX - rect.left;
+                  if (relX < rect.width / 2) goPrev();
+                  else goNext();
+                }}
+                onClick={(e) => {
+                  const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+                  const relX = e.clientX - rect.left;
+                  if (relX < rect.width / 2) goPrev();
+                  else goNext();
+                }}
               >
                 <img
                   src={selected.stories[activeIdx]}
                   alt={`${selected.name} ${activeIdx + 1}`}
                   className="w-full h-full object-cover pointer-events-none"
                   loading="eager"
+                  onLoad={() => {
+                    elapsedRef.current = 0;
+                    setProgress(0);
+                    setIsImageLoaded(true);
+                  }}
                 />
 
                 <button
