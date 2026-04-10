@@ -268,28 +268,20 @@ export default function ClientsStories() {
               <div
                 className="flex-1 relative"
                 onPointerDown={(e) => {
+                  e.preventDefault();
                   pointerStartXRef.current = e.clientX;
+                  try {
+                    (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+                  } catch {
+                    // ignore
+                  }
                 }}
                 onPointerUp={(e) => {
+                  e.preventDefault();
                   const startX = pointerStartXRef.current;
                   pointerStartXRef.current = null;
                   if (startX === null) return;
                   const dx = e.clientX - startX;
-                  if (Math.abs(dx) < 40) return;
-                  if (dx > 0) goPrev();
-                  else goNext();
-                }}
-                onTouchStart={(e) => {
-                  const t = e.touches?.[0];
-                  if (!t) return;
-                  pointerStartXRef.current = t.clientX;
-                }}
-                onTouchEnd={(e) => {
-                  const startX = pointerStartXRef.current;
-                  pointerStartXRef.current = null;
-                  const t = e.changedTouches?.[0];
-                  if (startX === null || !t) return;
-                  const dx = t.clientX - startX;
                   if (Math.abs(dx) >= 40) {
                     if (dx > 0) goPrev();
                     else goNext();
@@ -297,16 +289,11 @@ export default function ClientsStories() {
                   }
 
                   const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-                  const relX = t.clientX - rect.left;
-                  if (relX < rect.width / 2) goPrev();
-                  else goNext();
-                }}
-                onClick={(e) => {
-                  const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
                   const relX = e.clientX - rect.left;
                   if (relX < rect.width / 2) goPrev();
                   else goNext();
                 }}
+                style={{ touchAction: "none" }}
               >
                 <img
                   ref={imgRef}
