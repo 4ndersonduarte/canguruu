@@ -258,20 +258,20 @@ export default function ClientsStories() {
                 <img
                   src={selected.stories[activeIdx]}
                   alt={`${selected.name} ${activeIdx + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover pointer-events-none"
                   loading="eager"
                 />
 
                 <button
                   type="button"
                   onClick={goPrev}
-                  className="absolute inset-y-0 left-0 w-1/2"
+                  className="absolute inset-y-0 left-0 w-1/2 z-10 pointer-events-auto"
                   aria-label="Story anterior"
                 />
                 <button
                   type="button"
                   onClick={goNext}
-                  className="absolute inset-y-0 right-0 w-1/2"
+                  className="absolute inset-y-0 right-0 w-1/2 z-10 pointer-events-auto"
                   aria-label="Próximo story"
                 />
               </div>
