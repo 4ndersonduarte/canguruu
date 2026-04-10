@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import ImageModal from "./ImageModal";
 
@@ -34,8 +34,6 @@ type ApiClient = {
 export default function ClientsStories() {
   const [clients, setClients] = useState<Client[]>([]);
   const [apiError, setApiError] = useState<string | null>(null);
-
-  const storyDurationMs = 5000;
 
   useEffect(() => {
     let mounted = true;
@@ -95,76 +93,51 @@ export default function ClientsStories() {
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Client | null>(null);
+
+  const STORY_DURATION_MS = 5000;
+  const PROGRESS_TICK_MS = 50;
   const [activeIdx, setActiveIdx] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [pressing, setPressing] = useState(false);
-
-  const storyCount = selected?.stories.length ?? 0;
-  const activeSrc = selected?.stories[activeIdx] ?? null;
-
-  const progressWidth = useMemo(() => {
-    const p = Number.isFinite(progress) ? Math.min(1, Math.max(0, progress)) : 0;
-    return `${p * 100}%`;
-  }, [progress]);
+  const elapsedRef = useRef(0);
+  const pointerStartXRef = useRef<number | null>(null);
 
   const openClient = (c: Client) => {
     setSelected(c);
-    setActiveIdx(0);
-    setProgress(0);
     setOpen(true);
   };
 
-  const closeModal = () => {
-    setOpen(false);
-    setPressing(false);
-    setProgress(0);
+  useEffect(() => {
+    if (!open || !selected) return;
     setActiveIdx(0);
-  };
-
-  const goPrev = () => {
-    if (!selected) return;
     setProgress(0);
-    setActiveIdx((i) => Math.max(0, i - 1));
-  };
-
-  const goNext = () => {
-    if (!selected) return;
-    setProgress(0);
-    setActiveIdx((i) => {
-      const next = i + 1;
-      if (next >= (selected.stories?.length ?? 0)) {
-        closeModal();
-        return i;
-      }
-      return next;
-    });
-  };
+    elapsedRef.current = 0;
+  }, [open, selected?.id]);
 
   useEffect(() => {
-    if (!open || !selected || storyCount === 0) return;
-    if (pressing) return;
+    if (!open || !selected) return;
+    if (!selected.stories || selected.stories.length === 0) return;
 
-    let raf = 0;
-    let start = performance.now();
+    const timer = window.setInterval(() => {
+      elapsedRef.current += PROGRESS_TICK_MS;
+      const nextProgress = Math.min(1, elapsedRef.current / STORY_DURATION_MS);
+      setProgress(nextProgress);
 
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const next = elapsed / storyDurationMs;
-      if (next >= 1) {
-        setProgress(1);
-        goNext();
-        return;
+      if (elapsedRef.current >= STORY_DURATION_MS) {
+        elapsedRef.current = 0;
+        setProgress(0);
+        setActiveIdx((prev) => {
+          const next = prev + 1;
+          if (next >= selected.stories.length) {
+            setOpen(false);
+            return 0;
+          }
+          return next;
+        });
       }
-      setProgress(next);
-      raf = requestAnimationFrame(tick);
-    };
+    }, PROGRESS_TICK_MS);
 
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      start = 0;
-    };
-  }, [open, selected, activeIdx, pressing, storyCount]);
+    return () => window.clearInterval(timer);
+  }, [open, selected, activeIdx]);
 
   useEffect(() => {
     if (!open) return;
@@ -177,6 +150,27 @@ export default function ClientsStories() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, selected]);
+
+  const goPrev = () => {
+    if (!selected || selected.stories.length === 0) return;
+    elapsedRef.current = 0;
+    setProgress(0);
+    setActiveIdx((prev) => Math.max(0, prev - 1));
+  };
+
+  const goNext = () => {
+    if (!selected || selected.stories.length === 0) return;
+    elapsedRef.current = 0;
+    setProgress(0);
+    setActiveIdx((prev) => {
+      const next = prev + 1;
+      if (next >= selected.stories.length) {
+        setOpen(false);
+        return 0;
+      }
+      return next;
+    });
+  };
 
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -228,69 +222,60 @@ export default function ClientsStories() {
 
       <ImageModal
         isOpen={open}
-        onClose={closeModal}
+        onClose={() => setOpen(false)}
         title={selected ? `${selected.name} • Stories` : "Stories"}
-        aspectClassName="max-w-sm aspect-[9/16]"
+        aspectClassName="max-w-sm"
         showCloseButton={false}
         showTitle={false}
       >
         <div className="w-full h-full flex flex-col bg-bg">
           {selected && selected.stories.length > 0 ? (
-            <div className="relative flex-1 min-h-0 bg-bg">
-              <div className="absolute top-0 left-0 right-0 z-10 px-3 pt-3">
-                <div className="flex gap-1">
-                  {selected.stories.map((_, idx) => {
-                    const isDone = idx < activeIdx;
-                    const isActive = idx === activeIdx;
-                    return (
-                      <div key={`${selected.id}-bar-${idx}`} className="flex-1 h-1 rounded-full bg-white/25 overflow-hidden">
-                        <div
-                          className="h-full bg-white"
-                          style={{
-                            width: isDone ? "100%" : isActive ? progressWidth : "0%",
-                            transition: isActive ? "none" : "width 120ms linear",
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
+            <>
+              <div className="px-4 pt-3">
+                <div className="h-1.5 w-full rounded-full bg-border/40 overflow-hidden">
+                  <div
+                    className="h-full bg-primary"
+                    style={{ width: `${Math.round(progress * 100)}%` }}
+                  />
                 </div>
               </div>
 
               <div
-                className="absolute inset-0"
-                onMouseDown={() => setPressing(true)}
-                onMouseUp={() => setPressing(false)}
-                onMouseLeave={() => setPressing(false)}
-                onTouchStart={() => setPressing(true)}
-                onTouchEnd={() => setPressing(false)}
+                className="flex-1 relative"
+                onPointerDown={(e) => {
+                  pointerStartXRef.current = e.clientX;
+                }}
+                onPointerUp={(e) => {
+                  const startX = pointerStartXRef.current;
+                  pointerStartXRef.current = null;
+                  if (startX === null) return;
+                  const dx = e.clientX - startX;
+                  if (Math.abs(dx) < 40) return;
+                  if (dx > 0) goPrev();
+                  else goNext();
+                }}
               >
-                <div className="absolute inset-0 grid grid-cols-2">
-                  <button
-                    type="button"
-                    onClick={goPrev}
-                    className="w-full h-full"
-                    aria-label="Story anterior"
-                  />
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    className="w-full h-full"
-                    aria-label="Próximo story"
-                  />
-                </div>
+                <img
+                  src={selected.stories[activeIdx]}
+                  alt={`${selected.name} ${activeIdx + 1}`}
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
 
-                {activeSrc ? (
-                  <img
-                    src={activeSrc}
-                    alt={`${selected.name} ${activeIdx + 1}`}
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                    draggable={false}
-                  />
-                ) : null}
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  className="absolute inset-y-0 left-0 w-1/2"
+                  aria-label="Story anterior"
+                />
+                <button
+                  type="button"
+                  onClick={goNext}
+                  className="absolute inset-y-0 right-0 w-1/2"
+                  aria-label="Próximo story"
+                />
               </div>
-            </div>
+            </>
           ) : (
             <div className="flex-1 flex items-center justify-center px-6 text-center">
               <div>
@@ -316,13 +301,37 @@ export default function ClientsStories() {
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={closeModal}
-                  className="font-mono text-xs px-3 py-1.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
-                  aria-label="Fechar"
-                >
-                  Fechar
-                </button>
+                <div className="flex items-center gap-2">
+                  {selected.stories.length > 1 ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={goPrev}
+                        disabled={activeIdx === 0}
+                        className="w-9 h-9 rounded-btn border border-border/60 text-secondary font-medium hover:bg-secondary hover:text-bg transition-colors disabled:opacity-50 flex items-center justify-center"
+                        aria-label="Anterior"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        onClick={goNext}
+                        className="w-9 h-9 rounded-btn border border-border/60 text-secondary font-medium hover:bg-secondary hover:text-bg transition-colors flex items-center justify-center"
+                        aria-label="Próximo"
+                      >
+                        ›
+                      </button>
+                    </>
+                  ) : null}
+
+                  <button
+                    onClick={() => setOpen(false)}
+                    className="font-mono text-xs px-3 py-1.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
+                    aria-label="Fechar"
+                  >
+                    Fechar
+                  </button>
+                </div>
               </div>
             </div>
           )}
