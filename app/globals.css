@@ -146,3 +146,13 @@ a:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* Sublinhado mais discreto para o título longo da seção de serviços. */
+#o-que-faco .scribble-underline::after {
+  left: 0;
+  right: auto;
+  width: min(100%, 14rem);
+  height: 0.18em;
+  bottom: -0.12em;
+  transform: rotate(-1deg);
+}

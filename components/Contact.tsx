@@ -57,9 +57,6 @@ export default function Contact() {
                 </li>
               ))}
             </ol>
-            <div className="mt-auto pt-6 border-t border-border">
-              <a href="mailto:contato@canguruu.studio" className="block font-mono text-xs text-text-secondary break-all hover:text-text-primary transition-colors">contato@canguruu.studio</a>
-            </div>
           </div>
           <div className="p-6 sm:p-8 lg:p-10 border-t lg:border-t-0 lg:border-l border-border">
             <h3 className="font-display text-xl font-semibold mb-2">Conte um pouco sobre seu negócio</h3>
