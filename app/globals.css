@@ -147,12 +147,12 @@ a:focus-visible {
   html { scroll-behavior: auto; }
 }
 
-/* Sublinhado mais discreto para o título longo da seção de serviços. */
+/* Mede a linha pela mesma palavra e tipografia do título Clientes. */
 #o-que-faco .scribble-underline::after {
-  left: 0;
+  content: "Clientes" / "";
+  color: transparent;
   right: auto;
-  width: min(100%, 14rem);
-  height: 0.18em;
-  bottom: -0.12em;
-  transform: rotate(-1deg);
+  width: max-content;
+  padding-inline: 2px;
+  white-space: nowrap;
 }
