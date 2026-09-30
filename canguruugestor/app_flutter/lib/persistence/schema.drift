@@ -1,0 +1,267 @@
+CREATE TABLE profiles (
+  id TEXT NOT NULL PRIMARY KEY,
+  currency TEXT NOT NULL CHECK (currency = 'BRL'),
+  locale TEXT NOT NULL,
+  timezone TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0)
+);
+
+CREATE TABLE ledger_accounts (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  kind TEXT NOT NULL CHECK (kind IN ('asset', 'income', 'expense', 'equity', 'liability')),
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE accounts (
+  id TEXT NOT NULL PRIMARY KEY REFERENCES ledger_accounts(id),
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  name TEXT NOT NULL CHECK (length(trim(name)) BETWEEN 1 AND 80),
+  kind TEXT NOT NULL CHECK (kind IN ('bank', 'wallet')),
+  opened_on TEXT NOT NULL,
+  archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0, 1)),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0)
+);
+
+CREATE TABLE categories (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  name TEXT NOT NULL CHECK (length(trim(name)) BETWEEN 1 AND 80),
+  kind TEXT NOT NULL CHECK (kind IN ('income', 'expense')),
+  parent_id TEXT REFERENCES categories(id),
+  cost_nature TEXT NOT NULL CHECK (cost_nature IN ('fixed', 'variable')),
+  essential INTEGER NOT NULL CHECK (essential IN (0, 1)),
+  archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0, 1)),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0),
+  CHECK (parent_id IS NULL OR parent_id != id)
+);
+
+CREATE TABLE financial_events (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  kind TEXT NOT NULL CHECK (kind IN ('opening_balance', 'income', 'expense', 'transfer', 'reversal', 'card_purchase', 'card_opening', 'card_payment')),
+  effective_date TEXT NOT NULL,
+  description TEXT NOT NULL CHECK (length(trim(description)) BETWEEN 1 AND 160),
+  idempotency_key TEXT NOT NULL,
+  reversal_of TEXT UNIQUE REFERENCES financial_events(id),
+  created_at TEXT NOT NULL,
+  UNIQUE (profile_id, idempotency_key),
+  CHECK ((kind = 'reversal' AND reversal_of IS NOT NULL) OR (kind != 'reversal' AND reversal_of IS NULL))
+);
+
+CREATE TABLE postings (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  event_id TEXT NOT NULL REFERENCES financial_events(id),
+  ledger_account_id TEXT NOT NULL REFERENCES ledger_accounts(id),
+  sequence INTEGER NOT NULL CHECK (sequence IN (0, 1)),
+  amount_cents INTEGER NOT NULL CHECK (
+    typeof(amount_cents) = 'integer' AND amount_cents != 0 AND
+    amount_cents BETWEEN -9007199254740991 AND 9007199254740991),
+  category_id TEXT REFERENCES categories(id),
+  cost_nature TEXT CHECK (cost_nature IN ('fixed', 'variable')),
+  essential INTEGER CHECK (essential IN (0, 1)),
+  UNIQUE (event_id, sequence)
+);
+
+CREATE TABLE operation_receipts (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  command TEXT NOT NULL CHECK (command IN ('create_account', 'create_category', 'record', 'reverse', 'create_card', 'purchase', 'pay_invoice', 'create_schedule', 'create_series', 'revise_series', 'pause_series', 'resume_series', 'edit_scheduled', 'skip_scheduled', 'settle_scheduled','save_objective','save_goal','move_goal_funds','set_goal_status')),
+  fingerprint TEXT NOT NULL,
+  result_id TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX events_by_date ON financial_events (profile_id, effective_date, created_at);
+CREATE INDEX postings_by_account ON postings (ledger_account_id, event_id);
+CREATE INDEX postings_by_category ON postings (category_id, event_id);
+CREATE INDEX categories_by_parent ON categories (parent_id);
+
+CREATE TABLE credit_cards (
+  id TEXT NOT NULL PRIMARY KEY REFERENCES ledger_accounts(id),
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  name TEXT NOT NULL CHECK (length(trim(name)) BETWEEN 1 AND 80),
+  opened_on TEXT NOT NULL,
+  limit_cents INTEGER NOT NULL CHECK (typeof(limit_cents) = 'integer' AND limit_cents BETWEEN 0 AND 9007199254740991),
+  closing_day INTEGER NOT NULL CHECK (closing_day BETWEEN 1 AND 31),
+  due_day INTEGER NOT NULL CHECK (due_day BETWEEN 1 AND 31),
+  closing_policy TEXT NOT NULL CHECK (closing_policy IN ('next', 'current')),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0)
+);
+
+CREATE TABLE card_operations (
+  id TEXT NOT NULL PRIMARY KEY REFERENCES financial_events(id),
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  card_id TEXT NOT NULL REFERENCES credit_cards(id),
+  kind TEXT NOT NULL CHECK (kind IN ('purchase', 'opening_debt')),
+  billing_on TEXT NOT NULL,
+  installment_count INTEGER NOT NULL CHECK (installment_count BETWEEN 1 AND 360),
+  total_cents INTEGER NOT NULL CHECK (typeof(total_cents) = 'integer' AND total_cents BETWEEN 1 AND 9007199254740991),
+  reconciled INTEGER NOT NULL CHECK (reconciled IN (0, 1)),
+  CHECK (installment_count <= total_cents)
+);
+
+CREATE TABLE invoices (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  card_id TEXT NOT NULL REFERENCES credit_cards(id),
+  closing_on TEXT NOT NULL,
+  due_on TEXT NOT NULL CHECK (due_on > closing_on),
+  UNIQUE (card_id, closing_on)
+);
+
+CREATE TABLE invoice_items (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  operation_id TEXT NOT NULL REFERENCES card_operations(id),
+  invoice_id TEXT NOT NULL REFERENCES invoices(id),
+  sequence INTEGER NOT NULL CHECK (sequence BETWEEN 1 AND 360),
+  amount_cents INTEGER NOT NULL CHECK (typeof(amount_cents) = 'integer' AND amount_cents BETWEEN 1 AND 9007199254740991),
+  UNIQUE (operation_id, sequence)
+);
+
+CREATE TABLE invoice_payments (
+  id TEXT NOT NULL PRIMARY KEY REFERENCES financial_events(id),
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  card_id TEXT NOT NULL REFERENCES credit_cards(id),
+  account_id TEXT NOT NULL REFERENCES accounts(id),
+  amount_cents INTEGER NOT NULL CHECK (typeof(amount_cents) = 'integer' AND amount_cents BETWEEN 1 AND 9007199254740991)
+);
+
+CREATE TABLE invoice_payment_allocations (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  payment_id TEXT NOT NULL REFERENCES invoice_payments(id),
+  invoice_id TEXT NOT NULL REFERENCES invoices(id),
+  amount_cents INTEGER NOT NULL CHECK (typeof(amount_cents) = 'integer' AND amount_cents BETWEEN 1 AND 9007199254740991),
+  UNIQUE (payment_id, invoice_id)
+);
+
+CREATE INDEX invoices_by_due ON invoices (due_on, card_id);
+CREATE INDEX items_by_invoice ON invoice_items (invoice_id);
+CREATE INDEX allocations_by_invoice ON invoice_payment_allocations (invoice_id);
+
+CREATE TABLE recurrence_series (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  name TEXT NOT NULL CHECK (length(trim(name)) BETWEEN 1 AND 160),
+  kind TEXT NOT NULL CHECK (kind IN ('income','expense','transfer','card_purchase')),
+  paused_on TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0)
+);
+
+CREATE TABLE recurrence_rule_versions (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  series_id TEXT NOT NULL REFERENCES recurrence_series(id),
+  valid_from TEXT NOT NULL,
+  is_current INTEGER NOT NULL DEFAULT 1 CHECK (is_current IN (0,1)),
+  valid_until TEXT,
+  anchor_on TEXT NOT NULL,
+  frequency TEXT NOT NULL CHECK (frequency IN ('daily','weekly','monthly','yearly')),
+  interval_count INTEGER NOT NULL CHECK (interval_count BETWEEN 1 AND 1200),
+  last_day INTEGER NOT NULL CHECK (last_day IN (0,1)),
+  end_on TEXT,
+  max_occurrences INTEGER CHECK (max_occurrences BETWEEN 1 AND 1000000),
+  description TEXT NOT NULL CHECK (length(trim(description)) BETWEEN 1 AND 160),
+  amount_cents INTEGER NOT NULL CHECK (typeof(amount_cents) = 'integer' AND amount_cents BETWEEN 1 AND 9007199254740991),
+  account_id TEXT REFERENCES accounts(id),
+  destination_id TEXT REFERENCES accounts(id),
+  card_id TEXT REFERENCES credit_cards(id),
+  category_id TEXT REFERENCES categories(id),
+  cost_nature TEXT CHECK (cost_nature IN ('fixed','variable')),
+  essential INTEGER CHECK (essential IN (0,1)),
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE scheduled_occurrences (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  series_id TEXT REFERENCES recurrence_series(id),
+  rule_version_id TEXT REFERENCES recurrence_rule_versions(id),
+  ordinal INTEGER CHECK (ordinal > 0),
+  kind TEXT NOT NULL CHECK (kind IN ('income','expense','transfer','card_purchase')),
+  scheduled_on TEXT NOT NULL,
+  description TEXT NOT NULL CHECK (length(trim(description)) BETWEEN 1 AND 160),
+  amount_cents INTEGER NOT NULL CHECK (typeof(amount_cents) = 'integer' AND amount_cents BETWEEN 1 AND 9007199254740991),
+  account_id TEXT REFERENCES accounts(id),
+  destination_id TEXT REFERENCES accounts(id),
+  card_id TEXT REFERENCES credit_cards(id),
+  category_id TEXT REFERENCES categories(id),
+  cost_nature TEXT CHECK (cost_nature IN ('fixed','variable')),
+  essential INTEGER CHECK (essential IN (0,1)),
+  status TEXT NOT NULL CHECK (status IN ('pending','settled','skipped','cancelled')),
+  settled_event_id TEXT UNIQUE REFERENCES financial_events(id),
+  is_manual_override INTEGER NOT NULL DEFAULT 0 CHECK (is_manual_override IN (0,1)),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0),
+  UNIQUE(rule_version_id,ordinal),
+  CHECK ((series_id IS NULL AND rule_version_id IS NULL AND ordinal IS NULL) OR
+         (series_id IS NOT NULL AND rule_version_id IS NOT NULL AND ordinal IS NOT NULL)),
+  CHECK ((status = 'settled' AND settled_event_id IS NOT NULL) OR
+         (status != 'settled' AND settled_event_id IS NULL))
+);
+
+CREATE UNIQUE INDEX occurrence_by_series_date ON scheduled_occurrences(series_id,scheduled_on)
+  WHERE status != 'cancelled';
+CREATE INDEX scheduled_by_date ON scheduled_occurrences(status,scheduled_on);
+CREATE INDEX rules_by_series ON recurrence_rule_versions(series_id,valid_from);
+
+CREATE UNIQUE INDEX current_rule_per_series ON recurrence_rule_versions(series_id) WHERE is_current=1;
+
+CREATE TABLE objectives (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 80),
+  status TEXT NOT NULL CHECK (status IN ('active','completed','archived')),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0)
+);
+
+CREATE TABLE goals (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  objective_id TEXT REFERENCES objectives(id),
+  title TEXT NOT NULL CHECK (length(trim(title)) BETWEEN 1 AND 80),
+  purpose TEXT NOT NULL CHECK (purpose IN ('emergency','purchase','general')),
+  target_cents INTEGER NOT NULL CHECK (typeof(target_cents) = 'integer' AND target_cents > 0 AND target_cents <= 9007199254740991),
+  target_on TEXT,
+  priority INTEGER NOT NULL CHECK (priority BETWEEN 1 AND 5),
+  status TEXT NOT NULL CHECK (status IN ('active','paused','fulfilled','archived')),
+  fulfilled_on TEXT,
+  fulfilled_cents INTEGER CHECK (fulfilled_cents IS NULL OR fulfilled_cents >= 0),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0)
+);
+
+CREATE TABLE goal_fund_movements (
+  id TEXT NOT NULL PRIMARY KEY,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  goal_id TEXT NOT NULL REFERENCES goals(id),
+  account_id TEXT NOT NULL REFERENCES accounts(id),
+  effective_on TEXT NOT NULL,
+  amount_cents INTEGER NOT NULL CHECK (typeof(amount_cents) = 'integer' AND amount_cents != 0 AND amount_cents BETWEEN -9007199254740991 AND 9007199254740991),
+  sequence_no INTEGER NOT NULL CHECK (sequence_no > 0),
+  request_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE (request_id),
+  UNIQUE (goal_id, account_id, sequence_no)
+);
+
+CREATE INDEX goals_by_status ON goals(profile_id, status, priority);
+CREATE INDEX goal_movements_by_goal ON goal_fund_movements(goal_id, effective_on);
+CREATE INDEX goal_movements_by_account ON goal_fund_movements(account_id, effective_on);

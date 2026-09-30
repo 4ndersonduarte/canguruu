@@ -1,0 +1,30 @@
+{
+  "date": "2026-09-11",
+  "appVersion": "0.1.0+1",
+  "flutter": "3.35.7",
+  "dart": "3.9.2",
+  "staticAnalysis": "passed",
+  "flutterTests": {
+    "failed": 0,
+    "passed": 29
+  },
+  "browserChecks": [
+    "Navegação disponível na árvore de acessibilidade",
+    "Duas contas, receita, despesa e transferência com saldo de R$ 3.874,50",
+    "Exportação JSON pelo navegador",
+    "Restauração substitui os dados e preserva o saldo",
+    "Saldo preservado após fechar e reabrir o navegador",
+    "Reabertura, gravação e persistência de uma despesa sem conexão",
+    "Navegação mobile em 390 × 844",
+    "Nenhum erro JavaScript ou recurso externo requisitado"
+  ],
+  "browserErrors": [],
+  "externalRequests": [],
+  "builds": {
+    "web": "release passed",
+    "windows": "release passed",
+    "android": "blocked before app compilation: Java UnixDomainSockets loopback failure"
+  },
+  "originalSiteTypeCheck": "passed",
+  "originalSiteTrackedDiff": "empty"
+}

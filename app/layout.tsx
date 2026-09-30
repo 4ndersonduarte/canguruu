@@ -22,9 +22,9 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Canguruu | Design, Estratégia & Dev",
+  title: "Canguruu | Comunicação e sites para sua empresa",
   description:
-    "Design, Estratégia & Dev: artes e campanhas, identidade visual, sites e apps, vídeo e motion. Do rabisco ao produto.",
+    "Comunicação profissional a partir de R$ 400/mês. Conheça o Canguruu+ por R$ 800/mês, com artes, campanhas, site profissional, hospedagem e suporte.",
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",

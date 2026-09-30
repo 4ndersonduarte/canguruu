@@ -5,7 +5,8 @@ import { useTheme } from "@/hooks/useTheme";
 
 const navLinks = [
   { href: "#trabalhos", label: "Trabalhos" },
-  { href: "#o-que-faco", label: "O Que Fazemos" },
+  { href: "#seu-site", label: "Seu site" },
+  { href: "#planos", label: "Planos" },
   { href: "#contato", label: "Contato" },
 ];
 
@@ -39,10 +40,10 @@ export default function Header() {
           ))}
           
           <a
-            href="#contato"
+            href="#planos"
             className="font-mono text-sm px-3 sm:px-4 py-2.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all"
           >
-            Solicitar Orçamento
+            Ver planos
           </a>
         </div>
       </nav>

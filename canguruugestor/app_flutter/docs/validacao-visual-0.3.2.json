@@ -1,0 +1,56 @@
+{
+  "version": "0.3.2+5",
+  "schema_version": 3,
+  "checked_at_utc": "2026-09-15T19:08:31.3749925Z",
+  "analyze": "passed",
+  "widget_tests": {
+    "passed": 7
+  },
+  "browser": {
+    "isolated_test_profile": true,
+    "external_requests": [],
+    "screenshots": 21,
+    "fixture": "dados fictícios da etapa 5",
+    "checked": [
+      "dashboard 1440",
+      "accounts 1440",
+      "cards 1440",
+      "schedule 1440",
+      "movements 1440",
+      "categories 1440",
+      "settings 1440",
+      "ajuda e valores ocultos 1440",
+      "dashboard 390",
+      "accounts 390",
+      "cards 390",
+      "schedule 390",
+      "movements 390",
+      "categories 390",
+      "settings 390",
+      "ajuda e valores ocultos 390",
+      "tipografia e ícones disponíveis offline"
+    ],
+    "errors": [],
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "manual_review": [
+      "dashboard desktop and mobile",
+      "movement form mobile",
+      "expanded help mobile"
+    ]
+  },
+  "builds": {
+    "windows": "release passed",
+    "web": "release passed",
+    "android": "not validated; existing Java environment issue"
+  },
+  "package": {
+    "files": 25,
+    "sha256": "38476830A7D8F5E065C2F78E4D8D391F049BE8A1AA57A22DB3FAA1BDC39F91FE",
+    "path": "dist/Canguruu-Windows-0.3.2.zip"
+  },
+  "scope": "Typography, icons, surfaces and dashboard copy/actions. Financial rules and schema unchanged.",
+  "visual_status": "incremental refinement ready for user feedback"
+}

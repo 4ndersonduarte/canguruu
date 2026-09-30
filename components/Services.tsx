@@ -46,8 +46,8 @@ const services = [
     ),
   },
   {
-    label: "UI/UX & App Dev",
-    mono: "[Sites • React • Flutter]",
+    label: "Sites & Soluções Digitais",
+    mono: "[Sua empresa online]",
     description:
       "Desenvolvimento de sites e apps (web/React e Flutter Android). Soluções para comércios, gestão de negócio, páginas de oferta, cardápios online e muito mais.",
     examples: "Ex: site pra comércio, catálogo, cardápio online, gestão",
@@ -83,7 +83,7 @@ export default function Services() {
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="font-display text-2xl md:text-3xl font-bold mb-8"
       >
-        <span className="scribble-underline">O Que Fazemos</span>
+        <span className="scribble-underline">O que podemos fazer pela sua empresa</span>
       </motion.h2>
       <motion.div
         variants={container}

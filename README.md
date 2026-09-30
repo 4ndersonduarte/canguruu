@@ -43,3 +43,12 @@ npm start
 ## Opcional: Supabase para formulário
 
 Para enviar o formulário de contato para o Supabase em vez de abrir o WhatsApp, crie uma tabela (ex.: `contacts`) e use o client do Supabase no `handleSubmit` de `Contact.tsx`.
+
+## Planos e imagem do site
+
+- Planos e comparativo: `components/Plans.tsx`.
+- WhatsApp compartilhado pelos planos e contato: `lib/contact.ts`.
+- Seção do site: `components/WebsiteSection.tsx`.
+- A ilustração provisória está em `public/site-preview.svg`.
+- Para a imagem definitiva de notebook + celular, exporte **1600 × 1200 px (4:3)** em WebP ou PNG. Mantenha os dispositivos dentro da imagem, com uma margem de aproximadamente 80 px.
+- Salve a imagem em `public/site-preview.webp` e altere o `src` e o texto alternativo em `WebsiteSection.tsx`. O espaço já é responsivo e usa `object-contain` para preservar a composição inteira.

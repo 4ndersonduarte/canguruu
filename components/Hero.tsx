@@ -34,20 +34,20 @@ export default function Hero() {
           className="rounded-card border border-border bg-bg/80 p-6 md:p-8 flex flex-col justify-center card-glow transition-all duration-300 hover:-translate-y-1"
         >
           <h1 className="font-display text-[2rem] sm:text-4xl md:text-5xl font-bold leading-tight mb-4">
-            Da identidade visual ao seu sistema completo.
+            Sua empresa com a presença profissional que merece.
           </h1>
           <p className="text-text-secondary text-sm sm:text-base leading-relaxed mb-4 max-w-[62ch]">
-            Artes e campanhas pra comércio, identidade visual, sites e apps. Um visual limpo e moderno que chama atenção e vende.
+            Artes, campanhas e um site para apresentar seu negócio e facilitar o contato com seus clientes. Cuidamos da sua comunicação para você cuidar da sua empresa.
           </p>
           <p className="font-mono text-sm text-text-secondary mb-6">
-            UI/UX • Web Dev • Identidade Visual • Conteúdo
+            Planos a partir de R$ 400/mês • Site incluso no Canguruu+
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <a
-              href="#contato"
+              href="#planos"
               className="font-mono inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-2.5 rounded-btn bg-primary text-secondary font-medium border border-border hover:shadow-glow hover:-translate-y-0.5 transition-all w-full sm:w-fit"
             >
-              Solicitar Orçamento
+              Conhecer os planos
             </a>
             <a
               href="#trabalhos"

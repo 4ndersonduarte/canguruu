@@ -1,0 +1,55 @@
+{
+  "stage": 4,
+  "version": "0.2.0+2",
+  "schema_version": 2,
+  "checked_at_utc": "2026-09-14T18:07:02.9449232Z",
+  "analyze": "passed",
+  "tests": {
+    "final_targeted_rechecks": [
+      "card_rules_test.dart: 7 passed",
+      "widget_test.dart: 5 passed"
+    ],
+    "result": "passed",
+    "total": 58
+  },
+  "browser": {
+    "external_requests": [],
+    "result": "passed",
+    "errors": [],
+    "checks": [
+      "Navegação disponível na árvore de acessibilidade",
+      "Duas contas, receita, despesa e transferência com saldo de R$ 3.874,50",
+      "Exportação JSON pelo navegador",
+      "Restauração substitui os dados e preserva o saldo",
+      "Saldo preservado após fechar e reabrir o navegador",
+      "Reabertura, gravação e persistência de uma despesa sem conexão",
+      "Cartão e compra em 3 parcelas criados offline com centavos exatos",
+      "Pagamento parcial reduz conta e dívida sem duplicar despesa; patrimônio reconciliado",
+      "Backup v2 exportado e restaurado com cartões, parcelas e pagamento",
+      "Cartões preservados ao reiniciar Chrome; nova compra persiste offline",
+      "Navegação mobile em 390 × 844",
+      "Nenhum erro JavaScript ou recurso externo requisitado"
+    ],
+    "isolated_test_profile": true
+  },
+  "builds": {
+    "android": "not validated: existing Java loopback failure in environment",
+    "windows": "release passed",
+    "web": "release passed"
+  },
+  "migration": {
+    "from": 1,
+    "old_backup_import": "passed",
+    "preserves_records": true,
+    "to": 2
+  },
+  "package": {
+    "sha256": "FB6DAA5E5297BE2D932CC7F37C8D8D075FF7A70EF33E72EED5178C95156A1B6B",
+    "path": "dist/Canguruu-Windows-0.2.0.zip"
+  },
+  "limitations": [
+    "Card settings editing and reconciliation of actual invoice dates deferred",
+    "Refunds, fees, card reversals and payment reversals deferred",
+    "Recurrences, goals, forecasts and recommendation engine deferred"
+  ]
+}

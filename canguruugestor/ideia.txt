@@ -1,0 +1,598 @@
+# GERENCIADOR PESSOAL INTELIGENTE
+
+## Plano de desenvolvimento por prompts
+
+### CONTEXTO GERAL DO PROJETO
+
+Estamos criando um aplicativo Flutter de gerenciamento pessoal integrado.
+
+O objetivo não é criar apenas um aplicativo que registre números, tarefas ou informações.
+
+O conceito principal é:
+
+> O usuário registra informações da própria vida e o sistema entende as relações entre elas para ajudar o usuário a tomar decisões melhores.
+
+O aplicativo deverá integrar, progressivamente:
+
+* Financeiro
+* Contas
+* Cartões de crédito
+* Receitas
+* Despesas
+* Faturas
+* Categorias
+* Metas
+* Objetivos
+* Projetos
+* Compras planejadas
+* Lista de desejos
+* Necessidades
+* Hábitos
+* Tarefas
+* Anotações
+* Compromissos
+* Planejamento futuro
+* Análises
+* Recomendações
+
+A característica principal do aplicativo será a LINKAGEM entre essas informações.
+
+Exemplo:
+
+O usuário deseja comprar um produto de R$ 1.500.
+
+Ele informa:
+
+* preço
+* nível de desejo
+* nível de necessidade
+* urgência
+* prazo desejado
+* preço máximo aceitável
+* observações
+
+O sistema analisa:
+
+* saldo disponível
+* renda
+* despesas
+* contas futuras
+* cartões
+* faturas
+* parcelas
+* metas
+* objetivos
+* compromissos futuros
+* comportamento de gastos
+* outras compras planejadas
+
+E então pode recomendar:
+
+* Comprar agora
+* Comprar, mas com cautela
+* Aguardar
+* Economizar primeiro
+* Priorizar outra coisa
+* Evitar a compra neste momento
+
+A recomendação deve sempre apresentar os motivos.
+
+Inicialmente o aplicativo NÃO utilizará Supabase.
+
+Toda a persistência será LOCAL.
+
+A arquitetura, entretanto, deve ser planejada de forma que futuramente seja possível migrar ou sincronizar os dados com uma base remota sem precisar reconstruir todo o aplicativo.
+
+---
+
+# PROMPT 0 — ANÁLISE INICIAL DO PROJETO
+
+Antes de implementar qualquer funcionalidade:
+
+Analise completamente o projeto Flutter atual.
+
+Não faça alterações ainda.
+
+Identifique:
+
+* estrutura de pastas
+* arquitetura atual
+* gerenciamento de estado
+* navegação
+* dependências
+* persistência existente
+* componentes reutilizáveis
+* padrões de código
+* tema
+* suporte a Android/Web/Desktop, se existente
+* possíveis problemas arquiteturais
+
+Depois apresente:
+
+1. O que já existe
+2. O que pode ser reaproveitado
+3. O que precisa ser alterado
+4. O que está faltando
+5. Uma arquitetura recomendada para o novo sistema
+
+Não implemente nada nesta etapa.
+
+---
+
+# PROMPT 1 — VISÃO E REQUISITOS
+
+Com base no conceito apresentado, transforme a ideia em uma especificação funcional completa do aplicativo.
+
+Defina:
+
+* propósito
+* público
+* proposta de valor
+* módulos
+* entidades principais
+* funcionalidades
+* fluxos principais
+* relações entre entidades
+* regras de negócio iniciais
+* conceitos que devem ficar preparados para expansão
+
+Não implemente ainda.
+
+O resultado deve funcionar como documento de referência para todo o desenvolvimento.
+
+Não invente funcionalidades desconectadas do conceito central.
+
+Priorize a ideia de que o aplicativo deve compreender o contexto do usuário e não apenas registrar informações.
+
+---
+
+# PROMPT 2 — ARQUITETURA DO APLICATIVO
+
+Com base na especificação anterior, defina a arquitetura técnica do aplicativo Flutter.
+
+O aplicativo inicialmente funcionará 100% localmente.
+
+Defina:
+
+* estrutura de pastas
+* camadas
+* domínio
+* entidades
+* repositories
+* services
+* controllers/providers
+* estado
+* navegação
+* persistência
+* tratamento de erros
+* validações
+* dependências
+
+A arquitetura deve evitar acoplamento entre interface e banco local.
+
+O código deve permitir futuramente substituir ou complementar a persistência local por Supabase ou outra API.
+
+Antes de implementar, explique a arquitetura proposta.
+
+Depois implemente apenas a estrutura necessária.
+
+Não criar telas complexas ainda.
+
+---
+
+# PROMPT 3 — MODELO DE DADOS LOCAL
+
+Agora projete o modelo de dados local do aplicativo.
+
+Precisamos definir cuidadosamente as entidades e seus relacionamentos.
+
+Considere inicialmente:
+
+* User/Profile
+* Account
+* CreditCard
+* CreditCardInvoice
+* Transaction
+* TransactionCategory
+* Income
+* Expense
+* Goal
+* Objective
+* Project
+* PlannedPurchase
+* WishlistItem
+* Task
+* Habit
+* Note
+* Commitment
+
+Analise se essas entidades devem realmente existir separadamente ou se algumas devem ser unificadas.
+
+Para cada entidade defina:
+
+* id
+* campos
+* tipos
+* obrigatoriedade
+* relacionamentos
+* estados/status
+* timestamps
+* regras de validação
+
+Pense no modelo como um sistema conectado.
+
+Uma transação, por exemplo, poderá futuramente estar relacionada a:
+
+* categoria
+* conta
+* cartão
+* projeto
+* objetivo
+* meta
+* compra
+* evento
+
+Evite duplicação de informações.
+
+Prepare o modelo para sincronização futura com backend.
+
+Implemente a persistência local somente depois de apresentar o modelo e explicar as decisões.
+
+---
+
+# PROMPT 4 — SISTEMA DE LINKAGEM
+
+Esta é uma das partes mais importantes do aplicativo.
+
+Implemente o conceito de relações entre informações.
+
+O sistema não deve tratar os módulos como caixas isoladas.
+
+Exemplos:
+
+Despesa
+→ Categoria
+
+Despesa
+→ Conta
+
+Despesa
+→ Cartão
+
+Despesa
+→ Projeto
+
+Despesa
+→ Objetivo
+
+Despesa
+→ Meta
+
+Compra planejada
+→ Objetivo
+
+Compra planejada
+→ Meta
+
+Meta
+→ Objetivo
+
+Projeto
+→ Objetivo
+
+Tarefa
+→ Projeto
+
+Nota
+→ Projeto
+
+Defina uma estratégia flexível para essas relações.
+
+Evite criar dezenas de campos específicos e difíceis de manter.
+
+O sistema deverá permitir que novas entidades e relacionamentos sejam adicionados futuramente.
+
+Implemente essa camada de relacionamento e crie testes para garantir sua consistência.
+
+---
+
+# PROMPT 5 — MÓDULO FINANCEIRO
+
+Agora implemente o primeiro grande módulo funcional: FINANCEIRO.
+
+Deve incluir:
+
+## Contas
+
+* criação
+* edição
+* exclusão
+* saldo
+* tipo
+* histórico
+* movimentações
+
+## Cartões
+
+* limite
+* limite disponível
+* fechamento
+* vencimento
+* fatura
+* compras
+* parcelas
+
+## Receitas
+
+* valor
+* data
+* categoria
+* conta
+* recorrência
+
+## Despesas
+
+* valor
+* data
+* categoria
+* conta/cartão
+* recorrência
+* parcelamento
+* relacionamentos
+
+## Faturas
+
+* valor atual
+* valor pago
+* vencimento
+* fechamento
+* compras vinculadas
+* parcelas futuras
+
+O sistema precisa considerar corretamente:
+
+* compras parceladas
+* faturas futuras
+* saldo
+* movimentações
+* transferências entre contas
+* despesas recorrentes
+
+Não criar apenas CRUDs.
+
+O módulo deve possuir lógica financeira consistente.
+
+Criar testes para os principais cálculos.
+
+---
+
+# PROMPT 6 — METAS, OBJETIVOS E PLANEJAMENTO
+
+Implemente o sistema de:
+
+## Objetivos
+
+Exemplos:
+
+* comprar uma moto
+* fazer uma viagem
+* montar reserva
+* comprar computador
+
+## Metas
+
+Exemplo:
+
+Objetivo:
+"Comprar uma moto"
+
+Meta:
+"Guardar R$ 15.000"
+
+Defina:
+
+* valor alvo
+* valor atual
+* prazo
+* progresso
+* prioridade
+* contribuição planejada
+* contribuição realizada
+
+O sistema deve calcular:
+
+* quanto falta
+* quanto precisa guardar por período
+* previsão de conclusão
+* diferença entre planejamento e realidade
+
+As metas precisam estar conectadas ao financeiro.
+
+Se o comportamento financeiro mudar, o sistema deve conseguir recalcular a previsão.
+
+---
+
+# PROMPT 7 — DESEJOS E COMPRAS PLANEJADAS
+
+Implemente o sistema de desejos e compras planejadas.
+
+Cada item poderá conter:
+
+* nome
+* descrição
+* preço atual
+* preço máximo
+* link
+* categoria
+* desejo
+* necessidade
+* urgência
+* prioridade
+* prazo desejado
+* status
+* objetivo relacionado
+* meta relacionada
+* observações
+
+Exemplo:
+
+Notebook
+R$ 4.000
+
+Desejo: 7/10
+Necessidade: 9/10
+Urgência: 8/10
+
+O sistema deve permitir diferenciar:
+
+* desejo
+* necessidade
+* compra planejada
+* compra futura
+* compra realizada
+
+Uma compra não deve ser considerada apenas pelo preço.
+
+Ela deverá futuramente ser avaliada em conjunto com o contexto financeiro e os objetivos do usuário.
+
+---
+
+# PROMPT 8 — MOTOR DE ANÁLISE E RECOMENDAÇÕES
+
+Agora implemente o diferencial principal do aplicativo.
+
+Criar um motor de análise capaz de observar informações conectadas.
+
+O motor deve considerar, quando disponíveis:
+
+* renda
+* saldo
+* despesas
+* média de gastos
+* gastos recentes
+* cartões
+* faturas
+* parcelas
+* compromissos futuros
+* metas
+* objetivos
+* compras planejadas
+* prioridades
+* comportamento financeiro
+
+O motor deverá produzir recomendações explicáveis.
+
+Exemplos:
+
+"Comprar agora"
+
+"Pode comprar, mas isso atrasará sua meta."
+
+"Melhor aguardar."
+
+"Priorize esta compra."
+
+"Seu gasto atual está acima do seu padrão."
+
+"Você pode atingir sua meta antes do prazo."
+
+Toda recomendação deve possuir:
+
+* decisão
+* nível de confiança
+* fatores considerados
+* impacto
+* explicação
+
+Não utilizar IA generativa como substituto da lógica de negócio.
+
+Primeiro construir regras determinísticas e explicáveis.
+
+A IA poderá ser adicionada futuramente para interpretar e comunicar essas análises.
+
+Criar testes para diferentes cenários.
+
+---
+
+# PROMPT 9 — INTERFACE E EXPERIÊNCIA
+
+Agora crie a interface principal do aplicativo.
+
+A interface deve transmitir a ideia de:
+
+> "Entender minha vida e me ajudar a tomar decisões."
+
+Evitar transformar o aplicativo em uma coleção de telas administrativas.
+
+Criar uma Home/Dashboard que mostre contexto.
+
+Exemplos:
+
+* situação financeira
+* próximos compromissos
+* metas
+* objetivos
+* compras que precisam de atenção
+* gastos fora do padrão
+* recomendações
+* progresso
+* alertas
+
+A Home deve priorizar informações relevantes e acionáveis.
+
+O usuário deve conseguir entender rapidamente:
+
+"O que está acontecendo comigo?"
+
+"E o que eu deveria fazer?"
+
+Criar navegação simples para os módulos principais.
+
+Priorizar UX antes de quantidade de funcionalidades.
+
+---
+
+# PROMPT 10 — TESTES, REVISÃO E PREPARAÇÃO PARA EVOLUÇÃO
+
+Faça uma revisão completa do projeto.
+
+Analise:
+
+* arquitetura
+* código
+* persistência
+* relacionamentos
+* regras financeiras
+* cálculos
+* estado
+* navegação
+* UX
+* performance
+* tratamento de erros
+* testes
+
+Procure:
+
+* duplicação
+* acoplamento
+* inconsistências
+* regras conflitantes
+* possíveis problemas de migração futura
+* problemas de escalabilidade
+* problemas de integridade dos dados
+
+Crie testes para os fluxos críticos.
+
+Também prepare uma documentação técnica resumida contendo:
+
+* arquitetura
+* entidades
+* relacionamentos
+* regras de negócio
+* estratégia de persistência
+* pontos preparados para backend
+* próximos passos
+
+NÃO adicionar Supabase ainda.
+
+O objetivo é deixar uma base sólida para futuramente adicionar sincronização, autenticação e backend sem precisar reconstruir o aplicativo.

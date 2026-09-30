@@ -1,0 +1,58 @@
+{
+  "version": "0.3.3+6",
+  "schema_version": 3,
+  "checked_at_utc": "2026-09-16T12:18:47.6844631Z",
+  "analyze": "passed",
+  "widget_tests": {
+    "passed": 7
+  },
+  "browser": {
+    "isolated_test_profile": true,
+    "manual_review": [
+      "cards desktop and mobile",
+      "schedule desktop and mobile, including R$ 12.450,75",
+      "accounts mobile"
+    ],
+    "errors": [],
+    "fixture": "dados fictícios da etapa 5 e previsão criada pela interface em perfil isolado",
+    "external_requests": [],
+    "checked": [
+      "agenda com previsão fictícia de R$ 12.450,75",
+      "dashboard 1440",
+      "accounts 1440",
+      "cards 1440",
+      "schedule 1440",
+      "movements 1440",
+      "categories 1440",
+      "settings 1440",
+      "valores ocultos em cartões e agenda 1440",
+      "ajuda e valores ocultos 1440",
+      "dashboard 390",
+      "accounts 390",
+      "cards 390",
+      "schedule 390",
+      "movements 390",
+      "categories 390",
+      "settings 390",
+      "valores ocultos em cartões e agenda 390",
+      "ajuda e valores ocultos 390",
+      "tipografia e ícones disponíveis offline"
+    ],
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "screenshots": 25
+  },
+  "builds": {
+    "android": "not validated; existing Java environment issue",
+    "windows": "release passed",
+    "web": "release passed"
+  },
+  "package": {
+    "path": "dist/Canguruu-Windows-0.3.3.zip",
+    "files": 25,
+    "sha256": "26156E6A5D48ADCDB84DABE9660339E993C0EA40459C09AAEE7657642EA01D17"
+  },
+  "scope": "Shared amount typography and static background gradients; financial rules and schema unchanged."
+}

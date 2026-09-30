@@ -132,3 +132,17 @@ body {
 .dark-mode footer {
   background-color: rgba(64, 64, 60, 0.8) !important;
 }
+
+/* Mantém os títulos visíveis ao navegar pelo cabeçalho fixo. */
+section[id] {
+  scroll-margin-top: 7rem;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--text-primary);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

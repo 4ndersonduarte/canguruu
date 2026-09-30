@@ -5,6 +5,8 @@ import ClientsStories from "@/components/ClientsStories";
 import LogosSection from "@/components/LogosSection";
 import WorksGallery from "@/components/WorksGallery";
 import Contact from "@/components/Contact";
+import Plans from "@/components/Plans";
+import WebsiteSection from "@/components/WebsiteSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -16,6 +18,8 @@ export default function Home() {
       <ClientsStories />
       <LogosSection />
       <WorksGallery />
+      <WebsiteSection />
+      <Plans />
       <Contact />
       <Footer />
     </main>

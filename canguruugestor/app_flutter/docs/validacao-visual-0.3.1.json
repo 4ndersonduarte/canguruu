@@ -1,0 +1,54 @@
+{
+  "version": "0.3.1+4",
+  "schema_version": 3,
+  "checked_at_utc": "2026-09-15T18:46:38.0982907Z",
+  "analyze": "passed",
+  "widget_tests": {
+    "passed": 7
+  },
+  "browser": {
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "pages": [
+      "dashboard 1440",
+      "accounts 1440",
+      "cards 1440",
+      "schedule 1440",
+      "movements 1440",
+      "categories 1440",
+      "settings 1440",
+      "dashboard 390",
+      "accounts 390",
+      "cards 390",
+      "schedule 390",
+      "movements 390",
+      "categories 390",
+      "settings 390",
+      "tipografia e ícones disponíveis offline"
+    ],
+    "fixtures": "stage 5 fake data",
+    "forms": "movement form captured at both widths",
+    "isolated_test_profile": true,
+    "offline": "fonts and icons passed",
+    "external_requests": [],
+    "errors": []
+  },
+  "builds": {
+    "android": "not validated; existing Java environment issue",
+    "windows": "release passed",
+    "web": "release passed"
+  },
+  "visual_status": "first revision awaiting user feedback",
+  "package": {
+    "path": "dist/Canguruu-Windows-0.3.1.zip",
+    "sha256": "09F57B9656C73B19ECB7F45EE55BAD28D7FF53B801A4FEAF3B05964B4DC3F6FC",
+    "files": 25
+  },
+  "fonts": {
+    "JetBrainsMono": "48715A42EC242C21E9F02692891E147D022299A52E48D5E413E1A942193FFEDA",
+    "Trocchi": "D2D81D30D99AAA2C234E1D7BB67EE2E9F27F108F8D2EBEF1C89E0DB623734B91"
+  },
+  "scope": "presentation, local font assets and documentation; no finance schema changes"
+}

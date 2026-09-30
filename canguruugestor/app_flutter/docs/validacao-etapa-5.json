@@ -1,0 +1,70 @@
+{
+  "stage": 5,
+  "version": "0.3.0+3",
+  "schema_version": 3,
+  "checked_at_utc": "2026-09-15T13:25:08.559Z",
+  "analyze": "passed",
+  "tests": {
+    "result": "passed",
+    "total": 82
+  },
+  "browser": {
+    "result": "passed_with_download_test_limitation",
+    "browser": "chrome",
+    "checks": [
+      "Navegação disponível na árvore de acessibilidade",
+      "Duas contas, receita, despesa e transferência com saldo de R$ 3.874,50",
+      "Exportação JSON pelo navegador",
+      "Restauração substitui os dados e preserva o saldo",
+      "Saldo preservado após fechar e reabrir o navegador",
+      "Reabertura, gravação e persistência de uma despesa sem conexão",
+      "Cartão e compra em 3 parcelas criados offline com centavos exatos",
+      "Pagamento parcial reduz conta e dívida sem duplicar despesa; patrimônio reconciliado",
+      "Backup v3 exportado e restaurado com cartões, parcelas e pagamento",
+      "Cartões preservados ao reiniciar o navegador; nova compra persiste offline",
+      "Recorrência mensal offline gera 3 previsões sem alterar saldo nem despesa",
+      "Confirmar uma previsão reduz saldo uma única vez e preserva as 2 futuras",
+      "Pausa persiste após reiniciar; retomada preserva realização e gera somente as futuras",
+      "Backup v3 restaura agenda e lançamentos; reabertura offline não duplica previsões",
+      "Navegação e cadastro de previsão mobile em 390 × 844",
+      "Nenhum erro JavaScript ou recurso externo requisitado"
+    ],
+    "errors": [],
+    "external_requests": [],
+    "isolated_test_profile": true,
+    "backup_mode": "generated_blob_capture",
+    "native_backup_test": {
+      "result": "passed",
+      "tables_preserved": true,
+      "new_isolated_session": true
+    },
+    "limitation": "Repeated browser restarts followed by native downloads intermittently terminated Chrome and Edge test sessions. Full 16-scenario run captured the actual generated Blob before the native save, then restored it through the UI. A separate native download of a complete v3 agenda backup passed in a fresh Chrome session. Root cause of intermittent exits remains undetermined."
+  },
+  "builds": {
+    "web": "release passed",
+    "windows": "release passed",
+    "android": "not validated: existing Java loopback failure in environment"
+  },
+  "migration": {
+    "from": [
+      1,
+      2
+    ],
+    "to": 3,
+    "preserves_records": true,
+    "old_backup_import": "passed"
+  },
+  "package": {
+    "path": "dist/Canguruu-Windows-0.3.0.zip",
+    "sha256": "12404BA7BBF737CDC8E5F55AD1AA5FB6012DD09DE844FDBFD1EAB32E2C0A8100",
+    "files": 21,
+    "bytes": 14387920
+  },
+  "limitations": [
+    "Scheduled occurrences settle in full only; no automatic debit or assumed fees",
+    "Card recurring purchases create one installment; invoice payment remains in cards",
+    "Snapshots load complete local history; aggregate queries and pagination pending",
+    "Goals, planning, projections and recommendation engine pending",
+    "Native Web downloads after repeated automated browser restarts remain an unresolved test-environment limitation"
+  ]
+}
