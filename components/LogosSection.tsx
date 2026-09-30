@@ -17,9 +17,29 @@ type ApiClient = {
   created_at: string;
 };
 
+const localLogos: Logo[] = [
+  {
+    id: "local-coracao",
+    name: "Coração",
+    src: "/clientes/logotipos/cora%C3%A7%C3%A3o.png",
+  },
+];
+
 export default function LogosSection() {
   const [logos, setLogos] = useState<Logo[]>([]);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  const visibleLogos = useMemo(
+    () => [
+      ...logos,
+      ...localLogos.filter(
+        (local) => !logos.some(
+          (logo) => logo.src === local.src || logo.src === decodeURI(local.src)
+        )
+      ),
+    ],
+    [logos]
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -99,7 +119,7 @@ export default function LogosSection() {
         ) : null}
 
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3">
-          {logos.map((logo) => (
+          {visibleLogos.map((logo) => (
             <motion.div
               key={logo.id}
               initial={{ opacity: 0, y: 14 }}
